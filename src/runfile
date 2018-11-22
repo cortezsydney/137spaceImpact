@@ -1,6 +1,0 @@
-Proto files:
-    1. TcpPacket -> Create Lobby, Chat, Connect, etc
-    2. Player -> name
-
-    javac -cp .:./lib/proto.jar:./lib/protobuf.jar Menu.java
-clarissesydney@cbcortez:~/Desktop/123/src/main/java$
