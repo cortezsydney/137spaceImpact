@@ -16,7 +16,7 @@ public class Menu{
 
 	public static void main(String[] args){
      	System.out.print("Enter Name:");
-		String playerName = scanner.nextLine();										//instantiate a player
+		String playerName = scanner.nextLine();												//instantiate a player
 		Player player = Player.newBuilder().setName(playerName).build();
 
 		System.out.println("[1] Create a Lobby");
@@ -40,7 +40,7 @@ public class Menu{
 
 				CreateLobbyPacket checkLobbyPacket = CreateLobbyPacket.parseFrom(sliced1);
 
-				System.out.println("Hi: " + playerName + "! You successfully created a lobby.");
+				System.out.println("Hi: " + playerName + "! You successfully created a lobby. Maximum players of 3.");
 				System.out.println("Lobby ID: " + checkLobbyPacket.getLobbyId());
 
 				try{																		//connects to the created lobby
@@ -59,20 +59,15 @@ public class Menu{
 					int readbytes2 = inputStream2.read(recvd2, 0, recvd2.length);
 					byte[] sliced2 = Arrays.copyOf(recvd2, readbytes2);
 
-					TcpPacket parsedPacket = TcpPacket.parseFrom(sliced2);
-
 					checksConnections(sliced2, socket, player);
-					// if(parsedPacket.getType() == TcpPacket.PacketType.CONNECT){				
-					// 	TcpPacket.ConnectPacket connectionPacket = TcpPacket.ConnectPacket.parseFrom(sliced2);
-					// 	System.out.println("Enter ^q to quit or ^p to view other players.");
-					// 	chatThread(socket, player);											//starts to chat
-					// 	readThread(socket);
-					// }
+
 				}catch(Exception e){
 					System.out.println("failed at connecting to the created lobby");
+					e.printStackTrace();
 				}
 			}catch(Exception e){
 				System.out.println("failed at creating a lobby");
+				e.printStackTrace();
 			}
 		}else if (mainMenuChoice == 2){														//connects to the user inputted lobby
 			System.out.print("Enter Lobby Id: ");
@@ -96,46 +91,67 @@ public class Menu{
 				int readbytes2 = inputStream2.read(recvd2, 0, recvd2.length);
 				byte[] sliced2 = Arrays.copyOf(recvd2, readbytes2);
 
-				
-
 				checksConnections(sliced2, socket, player);
 			}catch(Exception e){
 				System.out.println("failed at connecting to lobby of your choice");
+				e.printStackTrace();
 			}
 		}
      }
 
-	 public static void chats(Socket socket, Player player){
+	 public static void chats(Socket socket, Player player){									//chats
 		int chatting = 1;
+		try{
+			while(chatting == 1){
+				String message = scanner.nextLine();
+				if (message.equals("^q")){
+					 TcpPacket.DisconnectPacket.Builder packet = TcpPacket.DisconnectPacket.newBuilder();
+					 packet.setType(TcpPacket.PacketType.DISCONNECT);
 
-		while(chatting == 1){
-			
-			String message = scanner.nextLine();
-			if (message.equals("^q")){
-				chatting = 0;
-				System.exit(0);
-			}else if (message.equals("^p")){
-				System.out.println("People in this chat:");
-			}else{
-				try{
-					TcpPacket.ChatPacket.Builder chatPacket = TcpPacket.ChatPacket.newBuilder();
-					chatPacket.setType(TcpPacket.PacketType.CHAT);
-					chatPacket.setPlayer(player);
-					chatPacket.setMessage(message).build();
-					OutputStream outputChat = socket.getOutputStream();
-					DataOutputStream outputStreamChat = new DataOutputStream(outputChat);
-					outputStreamChat.write(chatPacket.build().toByteArray(), 0, chatPacket.build().toByteArray().length);	
-				}catch(Exception e){
+					 OutputStream outSocket = socket.getOutputStream();
+					 DataOutputStream outputStream = new DataOutputStream(outSocket);
+					 outputStream.write(packet.build().toByteArray(), 0, packet.build().toByteArray().length);
 
+					 chatting = 0;
+					 System.out.println(player.getName() + "");
+					 System.exit(0);
+				}else if (message.equals("^p")){
+					System.out.print("People in this chat: ");
+
+					TcpPacket.PlayerListPacket.Builder packet = TcpPacket.PlayerListPacket.newBuilder();
+					packet.setType(TcpPacket.PacketType.PLAYER_LIST);
+
+					OutputStream outSocket = socket.getOutputStream();
+					DataOutputStream outputStream = new DataOutputStream(outSocket);
+					outputStream.write(packet.build().toByteArray(), 0, packet.build().toByteArray().length);
+				}else{
+					try{
+						TcpPacket.ChatPacket.Builder chatPacket = TcpPacket.ChatPacket.newBuilder();
+						chatPacket.setType(TcpPacket.PacketType.CHAT);
+						chatPacket.setPlayer(player);
+						chatPacket.setMessage(message).build();
+						OutputStream outputChat = socket.getOutputStream();
+						DataOutputStream outputStreamChat = new DataOutputStream(outputChat);
+						outputStreamChat.write(chatPacket.build().toByteArray(), 0, chatPacket.build().toByteArray().length);	
+					}catch(Exception e){
+						System.out.println("failed to send chat");
+						e.printStackTrace();
+					}
 				}
 			}
+		}catch(Exception e){
+			System.out.println("failed to send chat");
+			e.printStackTrace();
 		}
 	 }
 
 	public static void checksConnections(byte[] sliced2, Socket socket, Player player){
 		try{
 			TcpPacket parsedPacket = TcpPacket.parseFrom(sliced2);
+
 			if(parsedPacket.getType() == TcpPacket.PacketType.CONNECT){					//if the inputted lobby id is existing
+				System.out.println(player.getName() + " joined the conversation ============================" );
+				System.out.println("Enter ^q to quit or ^p to view other players.");
 				chatThread(socket, player);
 				readThread(socket);
 			}else if(parsedPacket.getType() == TcpPacket.PacketType.ERR_LDNE){			//if the lobby does not exist
@@ -149,11 +165,12 @@ public class Menu{
 				System.out.println("Error. (" + connectionPacket.getErrMessage() + ")");
 			}
 		}catch(Exception e){
+			System.out.println("failed to create a connection");
+			e.printStackTrace();
 		}
-		
 	}
 
-	 public static void sends(Socket socket){
+	public static void receives(Socket socket){											//gets messages from other users
 		while(true){
 			try{
 				InputStream inputChat = socket.getInputStream();
@@ -167,14 +184,26 @@ public class Menu{
 				if(checkChatPacket.getType() == TcpPacket.PacketType.CHAT){
 					TcpPacket.ChatPacket nowChatPacket = TcpPacket.ChatPacket.parseFrom(sliced3);
 					System.out.println("\n" + nowChatPacket.getPlayer().getName() + ": " + nowChatPacket.getMessage());
+				}else if(checkChatPacket.getType() == TcpPacket.PacketType.DISCONNECT){
+					TcpPacket.DisconnectPacket packet = TcpPacket.DisconnectPacket.parseFrom(sliced3);
+	             	System.out.println(packet.getPlayer().getName() + " left the conversation ============================");
+				}else if(checkChatPacket.getType() == TcpPacket.PacketType.CONNECT){
+					TcpPacket.ConnectPacket packet = TcpPacket.ConnectPacket.parseFrom(sliced3);
+	             	System.out.println(packet.getPlayer().getName() + " joined the conversation ============================");
+				}else if(checkChatPacket.getType() == TcpPacket.PacketType.PLAYER_LIST){
+					TcpPacket.PlayerListPacket packet = TcpPacket.PlayerListPacket.parseFrom(sliced3);
+	                for(Player player: packet.getPlayerListList()) 
+						System.out.print(player.getName() + " == ");
+					System.out.println("");	
 				}
 			}catch(Exception e){
-
+				System.out.println("failed to read coming messages");
+				e.printStackTrace();
 			}
 		}
-	 }
+	}
 	
-	 public static void chatThread(Socket socket, Player player){
+	public static void chatThread(Socket socket, Player player){
       	Thread thread = new Thread(new Runnable(){
 			@Override
 			public void run(){
@@ -188,10 +217,9 @@ public class Menu{
       	Thread thread = new Thread(new Runnable(){
 			@Override
 			public void run(){
-				sends(socket);
+				receives(socket);
 			}
 		  });
 		thread.start();
     }
-	
 }
