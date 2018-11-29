@@ -68,67 +68,67 @@ public class Menu{
 		////////////////////////////////////////////////////////////////////////////////////////
 
 		//////////////////////////////////////////////////////////////////////////////////////////
-			//CHAT CARD
-			mainChatPanel = new JPanel();
-			
-			JPanel chatPanel = new JPanel();
-			chatPanel.setLayout(new BorderLayout());
-			chatPanel.setPreferredSize(new Dimension(295,480));
 
-			messagePanel = new JPanel();
-			messagePanel.setLayout(new GridBagLayout());
-			messagePanel.setPreferredSize(new Dimension(295,30));
-			messagePanel.setBackground(Color.black);
+		
+		//CHAT CARD
+		mainChatPanel = new JPanel();
+		
+		JPanel chatPanel = new JPanel();
+		chatPanel.setLayout(new BorderLayout());
+		chatPanel.setPreferredSize(new Dimension(295,480));
 
-			messageField = new JTextField(30);
+		messagePanel = new JPanel();
+		messagePanel.setLayout(new GridBagLayout());
+		messagePanel.setPreferredSize(new Dimension(295,30));
+		messagePanel.setBackground(Color.black);
 
-			headerPanel = new JPanel();
-			welcomeLabel = new JLabel();
-			welcomeLabel.setPreferredSize(new Dimension(295,40));
-			idLabel = new JLabel();
-			idLabel.setPreferredSize(new Dimension(295,40));
-			JLabel headerLabel = new JLabel("Enter ^q to quit or ^p to view other players.");
-			headerLabel.setPreferredSize(new Dimension(295,10));
+		messageField = new JTextField(30);
 
-			headerLabel.setFont(new Font("Serif", Font.PLAIN, 10));
-			headerPanel.add(welcomeLabel);
-			headerPanel.add(headerLabel);
-			
-			chatArea = new JTextArea();
-			chatArea.setEditable(false);
-			chatArea.setFont(new Font("Serif", Font.PLAIN, 11));
-			chatArea.setLineWrap(true);
-			chatArea.setBackground(Color.pink);
+		headerPanel = new JPanel();
+		welcomeLabel = new JLabel();
+		welcomeLabel.setPreferredSize(new Dimension(295,40));
+		idLabel = new JLabel();
+		idLabel.setPreferredSize(new Dimension(295,40));
+		JLabel headerLabel = new JLabel("Enter ^q to quit or ^p to view other players.");
+		headerLabel.setPreferredSize(new Dimension(295,10));
 
-			chatPanel.add(new JScrollPane(chatArea), BorderLayout.CENTER);
+		headerLabel.setFont(new Font("Serif", Font.PLAIN, 10));
+		headerPanel.add(welcomeLabel);
+		headerPanel.add(headerLabel);
+		
+		chatArea = new JTextArea();
+		chatArea.setEditable(false);
+		chatArea.setFont(new Font("Serif", Font.PLAIN, 11));
+		chatArea.setLineWrap(true);
+		chatArea.setBackground(Color.pink);
 
-
-			GridBagConstraints left = new GridBagConstraints();
-			left.anchor = GridBagConstraints.LINE_START;
-			left.fill = GridBagConstraints.HORIZONTAL;
-			left.weightx = 512.0D;
-			left.weighty = 1.0D;
-
-			GridBagConstraints right = new GridBagConstraints();
-			right.insets = new Insets(0, 10, 0, 0);
-			right.anchor = GridBagConstraints.LINE_END;
-			right.fill = GridBagConstraints.NONE;
-			right.weightx = 1.0D;
-			right.weighty = 1.0D;
-
-			messagePanel.add(messageField, left);
+		chatPanel.add(new JScrollPane(chatArea), BorderLayout.CENTER);
 
 
-			chatPanel.add(BorderLayout.SOUTH, messagePanel);
-			chatPanel.add(BorderLayout.NORTH, headerPanel);
-			
-			// mainChatPanel.add(lab el);
-			mainChatPanel.add(chatPanel);
-			// createLobby();
+		GridBagConstraints left = new GridBagConstraints();
+		left.anchor = GridBagConstraints.LINE_START;
+		left.fill = GridBagConstraints.HORIZONTAL;
+		left.weightx = 512.0D;
+		left.weighty = 1.0D;
 
-			//////////////////////////////////////////////////////////////////////////////
+		GridBagConstraints right = new GridBagConstraints();
+		right.insets = new Insets(0, 10, 0, 0);
+		right.anchor = GridBagConstraints.LINE_END;
+		right.fill = GridBagConstraints.NONE;
+		right.weightx = 1.0D;
+		right.weighty = 1.0D;
+
+		messagePanel.add(messageField, left);
 
 
+		chatPanel.add(BorderLayout.SOUTH, messagePanel);
+		chatPanel.add(BorderLayout.NORTH, headerPanel);
+		
+		// mainChatPanel.add(lab el);
+		mainChatPanel.add(chatPanel);
+		// createLobby();
+
+		//////////////////////////////////////////////////////////////////////////////
 
 
 		//JOIN CARD
@@ -136,7 +136,19 @@ public class Menu{
 		idPanel = new JPanel();
 		JLabel idLabel = new JLabel("Enter Lobby ID: ");
 		idField = new JTextField(10);
-		idField.addKeyListener(new newIdKeyListener());
+		idField.addKeyListener(new KeyAdapter(){
+			public void keyPressed(KeyEvent e) {
+				int key = e.getKeyCode();
+				if (key == KeyEvent.VK_ENTER) {
+					String id = idField.getText();
+	
+					joinLobby(id);
+	
+				}
+			}
+			public void keyTyped(KeyEvent e) {}
+			   public void keyReleased(KeyEvent e) {}
+		});
 		idPanel.add(idLabel);
 		idPanel.add(idField);
 
@@ -147,7 +159,19 @@ public class Menu{
 		invalidIdPanel = new JPanel();
 		JLabel invalidIdLabel = new JLabel("Invalid Lobby ID. Please enter a valid Lobby ID: ");
 		invalidIdField = new JTextField(10);
-		invalidIdField.addKeyListener(new newIdKeyListener());
+		invalidIdField.addKeyListener(new KeyAdapter(){
+			public void keyPressed(KeyEvent e) {
+				int key = e.getKeyCode();
+				if (key == KeyEvent.VK_ENTER) {
+					String id = invalidIdField.getText();
+	
+					joinLobby(id);
+	
+				}
+			}
+			public void keyTyped(KeyEvent e) {}
+			   public void keyReleased(KeyEvent e) {}
+		});
 		invalidIdPanel.add(invalidIdLabel);
 		invalidIdPanel.add(invalidIdField);
 
@@ -158,7 +182,19 @@ public class Menu{
 		fullLobbyPanel = new JPanel();
 		JLabel fullLobbyLabel = new JLabel("Lobby is full. Please enter another Lobby ID: ");
 		fullLobbyField = new JTextField(10);
-		fullLobbyField.addKeyListener(new newIdKeyListener());
+		fullLobbyField.addKeyListener(new KeyAdapter(){
+			public void keyPressed(KeyEvent e) {
+				int key = e.getKeyCode();
+				if (key == KeyEvent.VK_ENTER) {
+					String id = fullLobbyField.getText();
+	
+					joinLobby(id);
+	
+				}
+			}
+			public void keyTyped(KeyEvent e) {}
+			   public void keyReleased(KeyEvent e) {}
+		});
 		fullLobbyPanel.add(fullLobbyLabel);
 		fullLobbyPanel.add(fullLobbyField);
 
@@ -168,7 +204,7 @@ public class Menu{
 		cards.add(choicePanel, "CHOICE");
 		cards.add(mainChatPanel, "MAINCHAT");
 		cards.add(idPanel, "ID");
-		cards.add(invalidIdField, "INVALID");
+		cards.add(invalidIdPanel, "INVALID");
 		cards.add(fullLobbyPanel, "FULL");
 
 
@@ -207,10 +243,9 @@ public class Menu{
 		public void keyPressed(KeyEvent e) {
 			int key = e.getKeyCode();
 			if (key == KeyEvent.VK_ENTER) {
-				System.out.println(idField.getText());
-				CardLayout c = (CardLayout) cards.getLayout();
-				c.show(cards, "MAINCHAT");
+				String id = idField.getText();
 
+				joinLobby(id);
 
 			}
 		}
@@ -233,6 +268,8 @@ public class Menu{
 		public void actionPerformed(ActionEvent event) {
 			CardLayout c = (CardLayout) cards.getLayout();
 			c.show(cards, "ID");
+
+
 		}
 	}
 
@@ -311,10 +348,39 @@ public class Menu{
 			e.printStackTrace();
 		}
 
-		
 
 	}
 
+	public void joinLobby(String id){
+
+		try{
+			CardLayout c = (CardLayout) cards.getLayout();
+			c.show(cards, "MAINCHAT");
+
+			Socket socket = new Socket(SERVERNAME, PORT);
+
+			TcpPacket.ConnectPacket.Builder connectionPacket = TcpPacket.ConnectPacket.newBuilder();
+			connectionPacket.setType(TcpPacket.PacketType.CONNECT);
+			connectionPacket.setPlayer(player);
+			connectionPacket.setLobbyId(id);
+		
+			OutputStream outputSocket2 = socket.getOutputStream();
+			DataOutputStream outputStream2 =  new DataOutputStream(outputSocket2);
+			outputStream2.write(connectionPacket.build().toByteArray(), 0, connectionPacket.build().toByteArray().length);
+
+			InputStream inSocket2 = socket.getInputStream();
+			DataInputStream inputStream2 = new DataInputStream(inSocket2);
+			byte[] recvd2 = new byte[1024];
+			int readbytes2 = inputStream2.read(recvd2, 0, recvd2.length);
+			byte[] sliced2 = Arrays.copyOf(recvd2, readbytes2);
+
+			checksConnections(sliced2, socket, player);
+		}catch(Exception e){
+			System.out.println("failed at connecting to lobby of your choice");
+			e.printStackTrace();
+		}
+
+	}
 
 	public void checksConnections(byte[] sliced2, Socket socket, Player player){
 		try{
@@ -322,8 +388,7 @@ public class Menu{
 			
 			if(parsedPacket.getType() == TcpPacket.PacketType.CONNECT){					//if the inputted lobby id is existing
 				chatArea.append("--- " + player.getName() + " joined me the conversation ---\n");
-				// System.out.println(player.getName() + " joined the conversation ============================" );
-				// System.out.println("Enter ^q to quit or ^p to view other players.");
+	
 				
 				chatThread(socket, player);
 				readThread(socket);
