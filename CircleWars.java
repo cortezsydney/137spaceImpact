@@ -47,11 +47,11 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 		//Some gui stuff i hate.
 		frame.getContentPane().add(this);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(800, 600);
+		frame.setSize(800, 700);
 		frame.setVisible(true);
 		
 		//create the buffer
-		offscreen=(BufferedImage)this.createImage(640, 480);
+		offscreen=(BufferedImage)this.createImage(800, 700);
 		
 		//Some gui stuff again...
 		frame.addKeyListener(new KeyHandler());		
@@ -67,8 +67,6 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 				offscreen.getGraphics().fillOval(100+(col*50), 50+(row*30), 20, 20);
 			}
 		}
-
-		
 
 		t.start();		
 	}
@@ -100,7 +98,7 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 			serverData=new String(buf);
 			serverData=serverData.trim();
 		
-
+			offscreen.getGraphics().clearRect(0, 0, 800, 700);
 			if (!connected && serverData.startsWith("CONNECTED")){
 				connected=true;
 				System.out.println("Connected.");
@@ -111,19 +109,25 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 			}else if (connected){
 				
 				if (serverData.startsWith("PLAYER")){
-					System.out.println("farfarfar---------------------------");
 					String[] playersInfo = serverData.split(":");
 					for (int i=0;i<playersInfo.length;i++){
 						String[] playerInfo = playersInfo[i].split(" ");
 						String pname =playerInfo[1];
 						int posX = Integer.parseInt(playerInfo[2]);
 						//draws player
-						offscreen.getGraphics().fillOval(Integer.parseInt(pos), 250, 100, 100);
-						// offscreen.getGraphics().drawString(pname+" position:"+playerInfo[2]+
-						// 										" health:"+playerInfo[3]+
-						// 										" hitPoints:"+playerInfo[4], posX, 500 );	
+						offscreen.getGraphics().fillOval(posX, 620, 50, 50);
+						offscreen.getGraphics().drawString(pname+" position:"+playerInfo[2]+
+						 										" health:"+playerInfo[3]+
+						 										" hitPoints:"+playerInfo[4], posX, 10 );	
 
-									
+						// for(int row = 0; row < 5; row++){
+						// 	for(int col = 0; col < 12; col++){
+						// 		NetAlien alien = new NetAlien(100+(col*50), 50+(row*30));
+						// 		listOfAliens.add(alien);
+						// 		alienCount += 1;
+						// 		offscreen.getGraphics().fillOval(100+(col*50), 50+(row*30), 20, 20);
+						// 	}
+						// }									
 					}
 					
 					frame.repaint();

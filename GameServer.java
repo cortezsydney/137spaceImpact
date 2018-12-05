@@ -90,7 +90,6 @@ public class GameServer implements Runnable, Constants{
 					  gameStage = IN_PROGRESS;
 					  break;
 				  case IN_PROGRESS:
-				   		System.out.println(playerData + " +++++++++++++++++++++++++");
 					  if (playerData.startsWith("PLAYER")){
 						  String[] playerInfo = playerData.split(" ");					  
 						  String pname =playerInfo[1];
