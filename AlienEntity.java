@@ -9,6 +9,7 @@ public class AlienEntity extends Entity {
 
 	private Game game;
 	
+	private double posX, posY;
 	
 	 // Create a new alien entity
 	public AlienEntity(Game game,String ref,int x,int y) {
@@ -16,6 +17,7 @@ public class AlienEntity extends Entity {
 		
 		this.game = game;
 		dx = -moveSpeed;
+		this.posX = x; this.posY = y;
 	}
 
 	/*
@@ -35,7 +37,9 @@ public class AlienEntity extends Entity {
 		if ((dx > 0) && (x > 750)) {
 			game.updateLogic();
 		}
-		
+		this.posX = x; 
+		this.posY = y; 
+		System.out.println(this.posX + " " + this.posY + "\n");
 		super.move(delta);
 	}
 	
@@ -45,11 +49,13 @@ public class AlienEntity extends Entity {
 	public void doLogic() {
 	
 		dx = -dx;
-		y += 100;
+		y += 20;
 
 		int flag = 0;
 		if (y >570) {
-			game.removeEntity(this);
+			
+				//game.clearEntities();
+				game.removeEntity(this); 
 				game.removeRemaining();
 				flag = 1;
 		}

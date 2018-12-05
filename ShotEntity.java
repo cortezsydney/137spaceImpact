@@ -1,17 +1,18 @@
 
-public class ShotEntity extends Entity {
-	//movement speed of shot
-	private double moveSpeed = -300;
+	public class ShotEntity extends Entity {
+		//movement speed of shot
+		private double moveSpeed = -300;
 
 	private Game game;
+	private ShipEntity ship;
 
 	private boolean used = false;
 	
 	//create new shot from player
 
-	public ShotEntity(Game game,String sprite,int x,int y) {
+	public ShotEntity(Game game,String sprite,int x,int y, ShipEntity ship) {
 		super(sprite,x,y);
-		
+		this.ship = ship;
 		this.game = game;
 		
 		dy = moveSpeed;
@@ -30,14 +31,9 @@ public class ShotEntity extends Entity {
 			game.removeEntity(this);
 		}
 	}
-	
 
-	/*
-	if shot collides with alien
-		remove shot 
-		remove alien
-		update aliens	
-	*/
+
+	
 
 	public void collidedWith(Entity other) {
 		
@@ -49,9 +45,10 @@ public class ShotEntity extends Entity {
 		// if we've hit an alien, kill it!
 
 		if (other instanceof AlienEntity) {
-			
-			//remove alien
-
+			this.ship.setHitPoints(1);
+			int hitpoints = this.ship.getHitPoints();
+			System.out.println("hitpoints = "+hitpoints);
+			//game.hitAlienScore();
 			game.removeEntity(this);
 			game.removeEntity(other);
 			

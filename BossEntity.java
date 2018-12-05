@@ -1,13 +1,13 @@
 //
 //player entity
 //
-public class ShipEntity extends Entity {
-	private int healthPoints = 15;
-	public int hitPoints = 0;
+public class BossEntity extends Entity {
+	private int healthPoints;
+	private int hitPoints;
 	private int position;
 	private Game game;
 // create new player entity
-	public ShipEntity(Game game,String ref,int x,int y) {
+	public BossEntity(Game game,String ref,int x,int y) {
 		super(ref,x,y);
 		
 		this.game = game;
@@ -41,10 +41,7 @@ public class ShipEntity extends Entity {
 		return this.healthPoints;
 
 	}
-	public int getHitPoints(){
-		return this.hitPoints;
-
-	}
+	
 
 	public void setPosition(int position){
 		this.position = position;
@@ -55,21 +52,18 @@ public class ShipEntity extends Entity {
 		this.hitPoints += healthPoints;
 
 	}
-	public void setHitPoints(int hitPoints){
-		this.hitPoints += hitPoints;
-
-	}
+	
 	
 	
 	//if player collides with aliens then deads
 	public void collidedWith(Entity other) {
-		if (other instanceof AlienEntity) {
+		if (other instanceof ShotEntity) {
 			//game.notifyDeath();
-			healthPoints -=5;
+			this.healthPoints -=1;
 			System.out.println("healthPoints = "+healthPoints);
 			game.removeEntity(this);
-			game.removeRemaining();
-			game.startGame();
+			game.removeEntity(other);
+			game.notifyAlienKilled();
 		}
 	}
 }

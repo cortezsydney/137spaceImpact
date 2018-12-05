@@ -24,7 +24,7 @@ public class Game extends Canvas {
 	//list of to be removed entities
 	private ArrayList removeList = new ArrayList();
 	//player
-	private Entity ship;
+	private ShipEntity ship;
 	//player movement
 	private double moveSpeed = 300;
 	//time for fire delay
@@ -45,7 +45,12 @@ public class Game extends Canvas {
 	private boolean firePressed = false;
 	//for game events
 	private boolean logicRequiredThisLoop = false;
-	
+
+	//number of boss
+	private int bossCount;
+	private int bossHealth;
+
+	private BossEntity boss;
 	
 	public Game() {
 		// frame to create the game
@@ -99,14 +104,31 @@ public class Game extends Canvas {
 	}
 	
 	//create new game
+
 	public void startGame() {
 
 		//clear all enities
 		entities.clear();
 		initEntities();
+		//score = 0;
 		leftPressed = false;
 		rightPressed = false;
 		firePressed = false;
+	}
+	public void clearEntities(){
+		entities.clear();
+	}
+
+	public void bossEntity(){
+
+		bossCount = 0;
+		for (int row=0;row<1;row++) {
+			for (int x=0;x<1;x++) {
+				Entity boss = new BossEntity(this,"sprites/alien.png",100+(x*500),(50)+row*30);
+				entities.add(boss);
+				bossCount++;
+			}
+		}
 	}
 	
 	//initialize entities :)
@@ -121,7 +143,7 @@ public class Game extends Canvas {
 
 		alienCount = 0;
 		for (int row=0;row<5;row++) {
-			for (int x=0;x<12;x++) {
+			for (int x=0;x<5;x++) {
 				Entity alien = new AlienEntity(this,"sprites/alien.png",100+(x*50),(50)+row*30);
 				entities.add(alien);
 				alienCount++;
@@ -160,7 +182,16 @@ public class Game extends Canvas {
 			removeList.clear();
 			alienCount--;
 			
-}
+	}
+		//////////////////////////////////////////////////
+	 // public void hitAlienScore() {
+  //       //Add 5 to the score
+  //       score += 5;
+  //       alienHealth -=5; 
+  //       System.out.println("alien health = "+alienHealth);
+  //       System.out.println("Current Score = "+score);
+  //   }
+	//////////////////////////////////////////////////
  
 	public int getAlienCount(){
 		return alienCount;
@@ -171,24 +202,29 @@ public class Game extends Canvas {
 	}
 
 	public void notifyAlienKilled() {
+		//bossCount = this.boss.getHealthPoints();
 		
-
-		alienCount--;
 		
 		if (alienCount == 0) {
-			notifyWin();
+			bossEntity();
+
 		}
+
+		// if (bossEntity.getHealthPoints() == 0){
+
+
+		// }
 		
 				
-		for (int i=0;i<entities.size();i++) {
-			Entity entity = (Entity) entities.get(i);
+		// for (int i=0;i<entities.size();i++) {
+		// 	Entity entity = (Entity) entities.get(i);
 			
-			if (entity instanceof AlienEntity) {
+		// 	if (entity instanceof AlienEntity) {
 				
 
-				entity.setHorizontalMovement(entity.getHorizontalMovement() * 1.02);
-			}
-		}
+		// 		entity.setHorizontalMovement(entity.getHorizontalMovement() * 1.02);
+		// 	}
+		// }
 	}
 	
 	//fire shots if player is able to (firing interval)
@@ -203,7 +239,7 @@ public class Game extends Canvas {
 		//create shot entity
 
 		lastFire = System.currentTimeMillis();
-		ShotEntity shot = new ShotEntity(this,"sprites/shot.png",ship.getX()+10,ship.getY()-30);
+		ShotEntity shot = new ShotEntity(this,"sprites/shot.png",ship.getX()+10,ship.getY()-30, ship);
 		entities.add(shot);
 	}
 	
@@ -277,7 +313,7 @@ public class Game extends Canvas {
 				for (int i=0;i<entities.size();i++) {
 					Entity entity = (Entity) entities.get(i);
 					entity.doLogic();
-					System.out.println(entities.size());
+					//System.out.println(entities.size());
 					
 				}
 				if(entities.size() == 1){;

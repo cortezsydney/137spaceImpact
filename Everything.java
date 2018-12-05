@@ -2,7 +2,7 @@
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
-public abstract class Entity {
+public abstract class Everything {
 	
 	protected double x;
 	
@@ -19,7 +19,7 @@ public abstract class Entity {
 	private Rectangle him = new Rectangle();
 	
 	//create entity using sprite and location
-	public Entity(String ref,int x,int y) {
+	public Everything(String ref,int x,int y) {
 		this.sprite = SpriteStore.get().getSprite(ref);
 		this.x = x;
 		this.y = y;
@@ -29,10 +29,8 @@ public abstract class Entity {
 	public void move(long delta) {
 		// update the location of the entity based on move speeds
 
-		x += (delta * dx)/1000;
-		y += (delta * dy)/1000;
-		// System.out.println("position x: "+x);
-		// System.out.println("position y: "+y);
+		x += (delta * dx) / 1000;
+		y += (delta * dy) / 1000;
 	}
 	
 	//set horizontal speed
