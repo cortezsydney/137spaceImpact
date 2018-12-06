@@ -30,8 +30,12 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 	DatagramSocket socket = new DatagramSocket();
 	String serverData;
 	BufferedImage offscreen;
-	
+	int shoot = 40;
+
+	int shootPos;
 	String pos;
+	ArrayList shots = new ArrayList();
+
 	public CircleWars(String server,String name, String pos, int healthPoints, int hitPoints) throws Exception{
 		this.server=server;
 		this.name=name;
@@ -71,6 +75,7 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 	}
 	
 	public void run(){
+		long lastLoopTime = System.currentTimeMillis();
 		while(true){
 			try{
 				Thread.sleep(1);
@@ -98,6 +103,9 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 			}else if (connected){
 				
 				if (serverData.startsWith("PLAYER")){
+					long lala = System.currentTimeMillis() - lastLoopTime;
+					lastLoopTime = System.currentTimeMillis();
+
 					String[] playersInfo = serverData.split(":");
 					for (int i=0;i<playersInfo.length;i++){
 						String[] playerInfo = playersInfo[i].split(" ");
@@ -107,7 +115,8 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 						offscreen.getGraphics().fillOval(posX, 620, 50, 50);
 						offscreen.getGraphics().drawString(pname+" position:"+playerInfo[2]+
 						 										" health:"+playerInfo[3]+
-						 										" hitPoints:"+playerInfo[4], posX, 10 );					
+																 " hitPoints:"+playerInfo[4], posX, 10 );
+						
 					}	
 					frame.repaint();
 				}
@@ -152,7 +161,9 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 		public void keyPressed(KeyEvent ke){
 			prevX=x;prevY=y;
 			switch (ke.getKeyCode()){
-				case KeyEvent.VK_SPACE: break;
+				case KeyEvent.VK_SPACE:
+					fire(x);
+					break;
 				case KeyEvent.VK_LEFT:x-=xspeed;break;
 				case KeyEvent.VK_RIGHT:x+=xspeed;break;
 			}
@@ -161,8 +172,16 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 			}	
 		}
 	}
+
+
+	public void fire(int shootPos){
 	
-	
+		Shot shot = new Shot(shootPos);
+		shot.move();
+		System.out.println("shotmade "+ shot.getX() + shot.getY() );
+		
+	}
+
 	public static void main(String args[]) throws Exception{
 		if (args.length != 3){
 			System.out.println("Usage: java -jar circlewars-client <server> <player name>");
