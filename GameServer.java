@@ -54,7 +54,8 @@ public class GameServer implements Runnable, Constants{
 
 	public void send(NetPlayer player, String msg){
 		DatagramPacket packet;	
-		byte buf[] = msg.getBytes();		
+		byte buf[] = new byte[1000];
+		buf = msg.getBytes();		
 		packet = new DatagramPacket(buf, buf.length, player.getAddress(),player.getPort());
 		
 		try{ 
@@ -78,7 +79,7 @@ public class GameServer implements Runnable, Constants{
 	
 	public void run(){
 		while(true){
-			byte[] buf = new byte[256];
+			byte[] buf = new byte[1000];
 			DatagramPacket packet = new DatagramPacket(buf, buf.length);
 			try{
      			serverSocket.receive(packet);
@@ -95,6 +96,9 @@ public class GameServer implements Runnable, Constants{
 							NetPlayer player=new NetPlayer(tokens[1],packet.getAddress(),packet.getPort());
 							System.out.println("Player connected: " + tokens[1]);
 							game.update(tokens[1].trim(), player);
+
+
+							System.out.println(player.getMapId());
 							broadcast("CONNECTED "+ tokens[1]);
 							playerCount++;
 							if (playerCount == numPlayers){
@@ -106,22 +110,8 @@ public class GameServer implements Runnable, Constants{
 					  System.out.println("Game State: START");
 					  broadcast("START");
 					  gameStage = IN_PROGRESS;
-
-						// for(int row = 0; row < 5; row++){
-						// 	for(int col = 0; col < 12; col++){
-						// 		NetAlien alien = new NetAlien(alienCount, packet.getAddress(),packet.getPort());
-						// 		map.update(alienCount, alien);
-						// 		alien.setX(100+(col*50));
-						// 		alien.setY(50+(row*30));
-						// 		alienCount += 1;
-								
-						// 		System.out.println(alien.toString().getClass().getName());
-						// 		broadcastMap(alien.toString());
-						// 	}
-						// }
 					  break;
 				  case IN_PROGRESS:
-				  	  System.out.println(playerData);
 					  if (playerData.startsWith("PLAYER")){
 						  String[] playerInfo = playerData.split(" ");					  
 						  String pname =playerInfo[1];
@@ -131,6 +121,17 @@ public class GameServer implements Runnable, Constants{
 						  NetPlayer player=(NetPlayer)game.getPlayers().get(pname);					  
 						
 						  player.setX(posX);
+						
+						  game.update(pname, player);
+						  broadcast(game.toString());
+					  }
+					if (playerData.startsWith("DEAD")){
+						System.out.println("Usage: java -jar circlewars-server <number of players>");
+						  String[] playerInfo = playerData.split(" ");					  
+						  String pname =playerInfo[1];
+						  
+						  NetPlayer player=(NetPlayer)game.getPlayers().get(pname);	
+						  player.deleteAlien(Integer.parseInt(playerInfo[2]));			  
 						
 						  game.update(pname, player);
 						  broadcast(game.toString());
