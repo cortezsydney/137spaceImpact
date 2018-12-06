@@ -46,8 +46,8 @@ public class GameServer implements Runnable, Constants{
 
 	public void broadcastMap(String msg){
 		for(Iterator ite = map.getAliens().keySet().iterator(); ite.hasNext();){
-			String name = (String)ite.next();
-			NetAlien alien = (NetAlien)map.getAliens().get(name);			
+			int iterator = (Integer)ite.next();
+			NetAlien alien = (NetAlien)map.getAliens().get(iterator);			
 			sendMap(alien, msg);	
 		}
 	}
@@ -115,7 +115,7 @@ public class GameServer implements Runnable, Constants{
 								alien.setY(50+(row*30));
 								alienCount += 1;
 								
-								System.out.println(typeOf(alien.toString()));
+								System.out.println(alien.toString().getClass().getName());
 								broadcastMap(alien.toString());
 							}
 						}

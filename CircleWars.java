@@ -91,7 +91,7 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 			serverData=new String(buf);
 			serverData=serverData.trim();
 		
-			offscreen.getGraphics().clearRect(0, 0, 800, 700);
+			//offscreen.getGraphics().clearRect(0, 0, 800, 700);
 			if (!connected && serverData.startsWith("CONNECTED")){
 				connected=true;
 				System.out.println("Connected.");
@@ -111,9 +111,7 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 						offscreen.getGraphics().fillOval(posX, 620, 50, 50);
 						offscreen.getGraphics().drawString(pname+" position:"+playerInfo[2]+
 						 										" health:"+playerInfo[3]+
-						 										" hitPoints:"+playerInfo[4], posX, 10 );	
-
-															
+						 										" hitPoints:"+playerInfo[4], posX, 10 );					
 					}	
 					frame.repaint();
 				}else if (serverData.startsWith("MAP")){
