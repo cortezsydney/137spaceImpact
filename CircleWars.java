@@ -30,9 +30,6 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 	DatagramSocket socket = new DatagramSocket();
 	String serverData;
 	BufferedImage offscreen;
-
-	int alienCount = 0;
-	ArrayList<NetAlien> listOfAliens = new ArrayList<NetAlien>();
 	
 	String pos;
 	public CircleWars(String server,String name, String pos, int healthPoints, int hitPoints) throws Exception{
@@ -58,8 +55,6 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 		frame.addMouseMotionListener(new MouseMotionHandler());
 
 		//tiime to play
-
-		
 
 		t.start();		
 	}
@@ -91,7 +86,8 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 			serverData=new String(buf);
 			serverData=serverData.trim();
 		
-			//offscreen.getGraphics().clearRect(0, 0, 800, 700);
+			offscreen.getGraphics().clearRect(0, 620, 800, 100);
+			offscreen.getGraphics().clearRect(0, 0, 800, 15);
 			if (!connected && serverData.startsWith("CONNECTED")){
 				connected=true;
 				System.out.println("Connected.");
@@ -114,18 +110,19 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 						 										" hitPoints:"+playerInfo[4], posX, 10 );					
 					}	
 					frame.repaint();
-				}else if (serverData.startsWith("MAP")){
-					String[] aliensInfo = serverData.split(":");
-					for (int i=0;i<aliensInfo.length;i++){
-						String[] alienInfo = aliensInfo[i].split(" ");
-						String pname =alienInfo[1];
-						int posX = Integer.parseInt(alienInfo[2]);
-						int posY = Integer.parseInt(alienInfo[3]);
+				}
+				// }else if (serverData.startsWith("MAP")){
+				// 	String[] aliensInfo = serverData.split(":");
+				// 	for (int i=0;i<aliensInfo.length;i++){
+				// 		String[] alienInfo = aliensInfo[i].split(" ");
+				// 		String pname =alienInfo[1];
+				// 		int posX = Integer.parseInt(alienInfo[2]);
+				// 		int posY = Integer.parseInt(alienInfo[3]);
 						
-						offscreen.getGraphics().fillOval(posX, posY, 20, 20);									
-					}
-					frame.repaint();
-				}		
+				// 		offscreen.getGraphics().fillOval(posX, posY, 20, 20);									
+				// 	}
+				// 	frame.repaint();
+				// }		
 			}			
 		}
 	}
@@ -141,13 +138,11 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 			if (prevX != x || prevY != y){
 				send("PLAYER "+ name + " " + x + " " + healthPoints + " " + hitPoints );
 				
-				
-				for(NetAlien alien: listOfAliens ){
-					String map = "MAP ";
-					map += alien.getX() + " " + alien.getY()+ " ";
-					send(map);
-				}
-				
+				// for(NetAlien alien: listOfAliens ){
+				// 	String map = "MAP ";
+				// 	map += alien.getX() + " " + alien.getY()+ " ";
+				// 	send(map);
+				// }
 			}
 		}
 	}

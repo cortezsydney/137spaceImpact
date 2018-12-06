@@ -12,7 +12,7 @@ public class GameServer implements Runnable, Constants{
 	int playerCount=0, alienCount = 0;
 	DatagramSocket serverSocket = null;
     GameState game;
-	MapState map;
+	//MapState map;
 	int gameStage = WAITING_FOR_PLAYERS;
 	int numPlayers;
 	
@@ -29,7 +29,7 @@ public class GameServer implements Runnable, Constants{
 		}catch(Exception e){}
 
 		game = new GameState();
-		map = new MapState();
+		//map = new MapState();
 		System.out.println("Game created...");
 		
 		t.start();
@@ -44,13 +44,13 @@ public class GameServer implements Runnable, Constants{
 		}
 	}
 
-	public void broadcastMap(String msg){
-		for(Iterator ite = map.getAliens().keySet().iterator(); ite.hasNext();){
-			int iterator = (Integer)ite.next();
-			NetAlien alien = (NetAlien)map.getAliens().get(iterator);			
-			sendMap(alien, msg);	
-		}
-	}
+	// public void broadcastMap(String msg){
+	// 	for(Iterator ite = map.getAliens().keySet().iterator(); ite.hasNext();){
+	// 		int iterator = (Integer)ite.next();
+	// 		NetAlien alien = (NetAlien)map.getAliens().get(iterator);			
+	// 		sendMap(alien, msg);	
+	// 	}
+	// }
 
 	public void send(NetPlayer player, String msg){
 		DatagramPacket packet;	
@@ -64,17 +64,17 @@ public class GameServer implements Runnable, Constants{
 		}
 	}
 
-	public void sendMap(NetAlien alien, String msg){
-		DatagramPacket packet;	
-		byte buf[] = msg.getBytes();		
-		packet = new DatagramPacket(buf, buf.length, alien.getAddress(),alien.getPort());
+	// public void sendMap(NetAlien alien, String msg){
+	// 	DatagramPacket packet;	
+	// 	byte buf[] = msg.getBytes();		
+	// 	packet = new DatagramPacket(buf, buf.length, alien.getAddress(),alien.getPort());
 		
-		try{
-			serverSocket.send(packet);
-		}catch(IOException ioe){
-			ioe.printStackTrace();
-		}
-	}
+	// 	try{
+	// 		serverSocket.send(packet);
+	// 	}catch(IOException ioe){
+	// 		ioe.printStackTrace();
+	// 	}
+	// }
 	
 	public void run(){
 		while(true){
@@ -107,18 +107,18 @@ public class GameServer implements Runnable, Constants{
 					  broadcast("START");
 					  gameStage = IN_PROGRESS;
 
-						for(int row = 0; row < 5; row++){
-							for(int col = 0; col < 12; col++){
-								NetAlien alien = new NetAlien(alienCount, packet.getAddress(),packet.getPort());
-								map.update(alienCount, alien);
-								alien.setX(100+(col*50));
-								alien.setY(50+(row*30));
-								alienCount += 1;
+						// for(int row = 0; row < 5; row++){
+						// 	for(int col = 0; col < 12; col++){
+						// 		NetAlien alien = new NetAlien(alienCount, packet.getAddress(),packet.getPort());
+						// 		map.update(alienCount, alien);
+						// 		alien.setX(100+(col*50));
+						// 		alien.setY(50+(row*30));
+						// 		alienCount += 1;
 								
-								System.out.println(alien.toString().getClass().getName());
-								broadcastMap(alien.toString());
-							}
-						}
+						// 		System.out.println(alien.toString().getClass().getName());
+						// 		broadcastMap(alien.toString());
+						// 	}
+						// }
 					  break;
 				  case IN_PROGRESS:
 				  	  System.out.println(playerData);
@@ -134,18 +134,19 @@ public class GameServer implements Runnable, Constants{
 						
 						  game.update(pname, player);
 						  broadcast(game.toString());
-					  }else if(playerData.startsWith("MAP")){
-						  System.out.println(playerData);
-						  String[] alienInfo = playerData.split(" ");			
-						  int pname = Integer.parseInt(alienInfo[1].trim());
-						  int posX = Integer.parseInt(alienInfo[2].trim());
-						  int posY = Integer.parseInt(alienInfo[3].trim());
-						  //Get the player from the game state
-						  NetAlien alien=(NetAlien)map.getAliens().get(pname);					  
-						  
-						  map.update(pname, alien);
-						  broadcastMap(map.toString());
 					  }
+					//   else if(playerData.startsWith("MAP")){
+					// 	  System.out.println(playerData);
+					// 	  String[] alienInfo = playerData.split(" ");			
+					// 	  int pname = Integer.parseInt(alienInfo[1].trim());
+					// 	  int posX = Integer.parseInt(alienInfo[2].trim());
+					// 	  int posY = Integer.parseInt(alienInfo[3].trim());
+					// 	  //Get the player from the game state
+					// 	  NetAlien alien=(NetAlien)map.getAliens().get(pname);					  
+						  
+					// 	  map.update(pname, alien);
+					// 	  broadcastMap(map.toString());
+					//   }
 					  break;
 			}				  
 		}
