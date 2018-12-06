@@ -73,7 +73,6 @@ public class NetPlayer {
 		retval+=position+" ";
 		retval+=healthPoints+" ";
 		retval+=hitPoints+" ";
-		retval+=map+" ";
 		return retval;
 	}	
 }

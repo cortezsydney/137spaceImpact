@@ -1,26 +1,43 @@
+import java.net.InetAddress;
+
+
 public class NetAlien{
-	private double posX, posY;
+	private int posX, posY;
     private int val=-10;
     private boolean alive;
+	private InetAddress address;
+	private int port;
+	private int iterator;
 
-	public NetAlien(int x,int y) {
-		this.posX = x; this.posY = y;
+
+	public NetAlien(int i, InetAddress address, int port) {
         this.alive = true;
+		this.address = address;
+		this.port = port;
+		this.iterator = i;
+	}
+
+	public InetAddress getAddress(){
+		return address;
+	}
+
+	public int getPort(){
+		return port;
 	}
 
     public void setX(int x){
 		this.posX=x;
 	}
 	
-	public double getX(){
+	public int getX(){
 		return this.posX;
 	}
 	
-	public void setY(double y){
+	public void setY(int y){
 		this.posY = y;		
 	}
 
-	public double getY(){
+	public int getY(){
 		return this.posY;
 	}
 
@@ -55,4 +72,14 @@ public class NetAlien{
     public boolean getAlive(){
         return this.alive;
     }
+
+
+	public String toString(){
+		String retval="";
+		retval+="MAP ";
+		retval+=this.iterator+" ";
+		retval+=this.posX+" ";
+		retval+=this.posY+" ";
+		return retval;
+	}	
 }

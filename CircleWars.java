@@ -32,7 +32,7 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 	BufferedImage offscreen;
 
 	int alienCount = 0;
-	ArrayList listOfAliens = new ArrayList();
+	ArrayList<NetAlien> listOfAliens = new ArrayList<NetAlien>();
 	
 	String pos;
 	public CircleWars(String server,String name, String pos, int healthPoints, int hitPoints) throws Exception{
@@ -59,14 +59,7 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 
 		//tiime to play
 
-		for(int row = 0; row < 5; row++){
-			for(int col = 0; col < 12; col++){
-				NetAlien alien = new NetAlien(100+(col*50), 50+(row*30));
-				listOfAliens.add(alien);
-				alienCount += 1;
-				offscreen.getGraphics().fillOval(100+(col*50), 50+(row*30), 20, 20);
-			}
-		}
+		
 
 		t.start();		
 	}
@@ -120,18 +113,21 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 						 										" health:"+playerInfo[3]+
 						 										" hitPoints:"+playerInfo[4], posX, 10 );	
 
-						// for(int row = 0; row < 5; row++){
-						// 	for(int col = 0; col < 12; col++){
-						// 		NetAlien alien = new NetAlien(100+(col*50), 50+(row*30));
-						// 		listOfAliens.add(alien);
-						// 		alienCount += 1;
-						// 		offscreen.getGraphics().fillOval(100+(col*50), 50+(row*30), 20, 20);
-						// 	}
-						// }									
-					}
-					
+															
+					}	
 					frame.repaint();
-				}			
+				}else if (serverData.startsWith("MAP")){
+					String[] aliensInfo = serverData.split(":");
+					for (int i=0;i<aliensInfo.length;i++){
+						String[] alienInfo = aliensInfo[i].split(" ");
+						String pname =alienInfo[1];
+						int posX = Integer.parseInt(alienInfo[2]);
+						int posY = Integer.parseInt(alienInfo[3]);
+						
+						offscreen.getGraphics().fillOval(posX, posY, 20, 20);									
+					}
+					frame.repaint();
+				}		
 			}			
 		}
 	}
@@ -146,6 +142,14 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 			y=me.getY();
 			if (prevX != x || prevY != y){
 				send("PLAYER "+ name + " " + x + " " + healthPoints + " " + hitPoints );
+				
+				
+				for(NetAlien alien: listOfAliens ){
+					String map = "MAP ";
+					map += alien.getX() + " " + alien.getY()+ " ";
+					send(map);
+				}
+				
 			}
 		}
 	}
