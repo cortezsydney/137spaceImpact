@@ -13,8 +13,8 @@ import java.net.InetAddress;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
 import java.util.ArrayList;
+
 
 public class CircleWars extends JPanel implements Runnable, Constants{
 	JFrame frame= new JFrame();
@@ -34,8 +34,10 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 
 	int shootPos;
 	String pos;
-	ArrayList shots = new ArrayList();
 
+	ArrayList<NetAlien> listOfAliens = new ArrayList<NetAlien>();
+
+	NetPlayer currPlayer;
 	public CircleWars(String server,String name, String pos, int healthPoints, int hitPoints) throws Exception{
 		this.server=server;
 		this.name=name;
@@ -66,7 +68,10 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 	
 	public void send(String msg){
 		try{
-			byte[] buf = msg.getBytes();
+			byte[] buf = new byte[1000];
+			buf = msg.getBytes();
+		//	buf.resize(150);
+			
         	InetAddress address = InetAddress.getByName(server);
         	DatagramPacket packet = new DatagramPacket(buf, buf.length, address, PORT);
         	socket.send(packet);
@@ -82,7 +87,7 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 			}catch(Exception ioe){}
 						
 			//Get the data from players
-			byte[] buf = new byte[256];
+			byte[] buf = new byte[1000];
 			DatagramPacket packet = new DatagramPacket(buf, buf.length);
 			try{
      			socket.receive(packet);
@@ -109,14 +114,28 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 					String[] playersInfo = serverData.split(":");
 					for (int i=0;i<playersInfo.length;i++){
 						String[] playerInfo = playersInfo[i].split(" ");
+						System.out.println("plauyer length:" +playerInfo.length);
 						String pname =playerInfo[1];
 						int posX = Integer.parseInt(playerInfo[2]);
+
+
+						//play
 						//draws player
 						offscreen.getGraphics().fillOval(posX, 620, 50, 50);
 						offscreen.getGraphics().drawString(pname+" position:"+playerInfo[2]+
 						 										" health:"+playerInfo[3]+
-																 " hitPoints:"+playerInfo[4], posX, 10 );
-						
+						 										" hitPoints:"+playerInfo[4], posX, 10 );
+
+						listOfAliens.clear();
+						int j;
+						for(j = 5; j <  playerInfo.length; j+=2){
+							offscreen.getGraphics().fillOval(Integer.parseInt(playerInfo[j]), Integer.parseInt(playerInfo[j+1]), 20, 20);
+							
+							NetAlien alien = new NetAlien(Integer.parseInt(playerInfo[j]), Integer.parseInt(playerInfo[j+1]));
+							listOfAliens.add(alien);
+						}
+						System.out.println(j+ "++++++++++++++++++++++++++++++++++++++++++++++");
+											
 					}	
 					frame.repaint();
 				}
@@ -145,13 +164,11 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 			x=me.getX();
 			y=me.getY();
 			if (prevX != x || prevY != y){
-				send("PLAYER "+ name + " " + x + " " + healthPoints + " " + hitPoints );
-				
-				// for(NetAlien alien: listOfAliens ){
-				// 	String map = "MAP ";
-				// 	map += alien.getX() + " " + alien.getY()+ " ";
-				// 	send(map);
-				// }
+				String msg = "PLAYER "+ name + " " + x + " " + healthPoints + " " + hitPoints + " ";
+				for(NetAlien alien: listOfAliens){
+					msg += alien.getX() + " " + alien.getY()+ " ";
+				}
+				send(msg);
 			}
 		}
 	}
@@ -161,14 +178,22 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 		public void keyPressed(KeyEvent ke){
 			prevX=x;prevY=y;
 			switch (ke.getKeyCode()){
-				case KeyEvent.VK_SPACE:
-					fire(x);
-					break;
+				case KeyEvent.VK_SPACE: 
+				//listOfAliens.clear();
+				System.out.println("YSADHALKDAL:FMDFA><FMA<FN<MAF" + listOfAliens.size());
+				send("DEAD ai 1");
+				fire(x);
+				break;
 				case KeyEvent.VK_LEFT:x-=xspeed;break;
 				case KeyEvent.VK_RIGHT:x+=xspeed;break;
 			}
 			if (prevX != x || prevY != y){
-				send("PLAYER "+ name + " " + x + " " + healthPoints + " " + hitPoints );
+				String msg = "PLAYER "+ name + " " + x + " " + healthPoints + " " + hitPoints + " ";
+				for(NetAlien alien: listOfAliens){
+					msg += alien.getX() + " " + alien.getY()+ " ";
+				}
+				send(msg);
+				
 			}	
 		}
 	}
@@ -192,3 +217,4 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 		new CircleWars(args[0],args[1], args[2], 15, 0);
 	}
 }
+

@@ -1,28 +1,63 @@
 import java.net.InetAddress;
+import java.util.Random;
+import java.util.ArrayList;
+
 
 public class NetPlayer {
 	private InetAddress address;
 	private int port;
 	private String name;
 	private int x,y;
-	private int position, healthPoints = 15, hitPoints = 0, map = 10;
+	private int position, healthPoints = 15, hitPoints = 0, mapId;
+	private ArrayList<NetAlien> listOfAliens = new ArrayList<NetAlien>();
 
 	public NetPlayer(String name,InetAddress address, int port){
 		this.address = address;
 		this.port = port;
 		this.name = name;
+
+
+		Random rand = new Random();
+		this.mapId = rand.nextInt(3) + 1;
+
+		if(this.mapId == 1){
+			for(int i = 0; i < 5; i++){
+				for(int j = 0; j < 8; j++){
+					NetAlien alien = new NetAlien(100+(j*50), 50+(i*30)); //85
+					this.listOfAliens.add(alien); 
+				}
+			}
+		}else if(this.mapId == 2){
+			for(int i = 0; i < 6; i++){
+				for(int j = 0; j < 10; j++){
+					NetAlien alien = new NetAlien(100+(j*50), 50+(i*30)); //125
+					this.listOfAliens.add(alien); 
+				}
+			}
+		}else if(this.mapId == 3){
+			for(int i = 0; i < 7; i++){
+				for(int j = 0; j < 12; j++){
+					NetAlien alien = new NetAlien(100+(j*50), 50+(i*30)); //173
+					this.listOfAliens.add(alien); 
+				}
+			}
+		}
 	}
 
 	public InetAddress getAddress(){
-		return address;
+		return this.address;
 	}
 
 	public int getPort(){
-		return port;
+		return this.port;
+	}
+
+	public int getMapId(){
+		return this.mapId;
 	}
 
 	public String getName(){
-		return name;
+		return this.name;
 	}
 	
 	public void setX(int x){
@@ -58,12 +93,13 @@ public class NetPlayer {
 		return this.hitPoints;
 	}
 
-	public void setMap(int map){
-		this.map = map;		
+	public ArrayList<NetAlien> getListOfAliens(){
+		return this.listOfAliens;
 	}
 
-	public int getMap(){
-		return this.map;
+	public void deleteAlien(int i){
+		this.listOfAliens.remove(i);
+		System.out.println("===================================================");
 	}
 
 	public String toString(){
@@ -73,6 +109,12 @@ public class NetPlayer {
 		retval+=position+" ";
 		retval+=healthPoints+" ";
 		retval+=hitPoints+" ";
+
+		for(NetAlien alien: this.listOfAliens){
+			retval += alien.getX() + " " + alien.getY() + " ";
+		} 
+		
+		System.out.println(this.listOfAliens.size());
 		return retval;
 	}	
 }
