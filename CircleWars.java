@@ -38,7 +38,7 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 	ArrayList<NetAlien> listOfAliens = new ArrayList<NetAlien>();
 	ArrayList<Shot> listOfShots = new ArrayList<Shot>();
 
-	NetPlayer currPlayer;
+	String currPlayer;
 	public CircleWars(String server,String name, String pos, int healthPoints, int hitPoints) throws Exception{
 		this.server=server;
 		this.name=name;
@@ -117,31 +117,26 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 					String[] playersInfo = serverData.split(":");
 					for (int i=0;i<playersInfo.length;i++){
 						String[] playerInfo = playersInfo[i].split(" ");
-						// System.out.println("plauyer length:" +playerInfo.length);
+						this.currPlayer = pname;
 						String pname =playerInfo[1];
 						int posX = Integer.parseInt(playerInfo[2]);
 
 
-						//play
-						//draws player
 						offscreen.getGraphics().fillOval(posX, 620, 50, 50);
 						offscreen.getGraphics().drawString(pname+" position:"+playerInfo[2]+
 						 										" health:"+playerInfo[3]+
 						 										" hitPoints:"+playerInfo[4], posX, 10 );
 
 						listOfAliens.clear();
+						offscreen.getGraphics().clearRect(0, 17, 800, 600);
 						int j;
-						for(j = 5; j+1 <  playerInfo.length; j+=2){
-							offscreen.getGraphics().fillOval(Integer.parseInt(playerInfo[j]), Integer.parseInt(playerInfo[j+1]), 20, 20);
-							
+						for(j = 5; j+1 <  playerInfo.length; j+=2){	
 							NetAlien alien = new NetAlien(Integer.parseInt(playerInfo[j]), Integer.parseInt(playerInfo[j+1]));
+
+							offscreen.getGraphics().fillOval(Integer.parseInt(playerInfo[j]), Integer.parseInt(playerInfo[j+1]), 20, 20);
 							listOfAliens.add(alien);
 						}
-						// System.out.println(j+ "++++++++++++++++++++++++++++++++++++++++++++++");
-
-						for(int k = 0 ; i < listOfShots.size(); i++){
-							offscreen.getGraphics().fillOval(listOfShots.get(k).getX(), listOfShots.get(k).getY(), 10, 10);
-						}
+						
 											
 					}
 					
@@ -187,12 +182,13 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 			prevX=x;prevY=y;
 			switch (ke.getKeyCode()){
 				case KeyEvent.VK_SPACE: 
-				//listOfAliens.clear();
-				// System.out.println("YSADHALKDAL:FMDFA><FMA<FN<MAF" + listOfAliens.size());
-				// send("DEAD ai 1");
 				fire(x);
 				break;
-				case KeyEvent.VK_LEFT:x-=xspeed;break;
+				case KeyEvent.VK_LEFT:
+					x-=xspeed;
+					listOfAliens.remove(1);
+					send("DEAD " + name + " 0");
+				break;
 				case KeyEvent.VK_RIGHT:x+=xspeed;break;
 			}
 			if (prevX != x || prevY != y){
