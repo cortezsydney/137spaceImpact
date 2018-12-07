@@ -36,6 +36,7 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 	String pos;
 
 	ArrayList<NetAlien> listOfAliens = new ArrayList<NetAlien>();
+	ArrayList<Shot> listOfShots = new ArrayList<Shot>();
 
 	NetPlayer currPlayer;
 	public CircleWars(String server,String name, String pos, int healthPoints, int hitPoints) throws Exception{
@@ -98,6 +99,8 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 		
 			offscreen.getGraphics().clearRect(0, 620, 800, 100);
 			offscreen.getGraphics().clearRect(0, 0, 800, 15);
+			
+			// offscreen.getGraphics().clearRect(0, 620, 800, 300);
 			if (!connected && serverData.startsWith("CONNECTED")){
 				connected=true;
 				System.out.println("Connected.");
@@ -114,7 +117,7 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 					String[] playersInfo = serverData.split(":");
 					for (int i=0;i<playersInfo.length;i++){
 						String[] playerInfo = playersInfo[i].split(" ");
-						System.out.println("plauyer length:" +playerInfo.length);
+						// System.out.println("plauyer length:" +playerInfo.length);
 						String pname =playerInfo[1];
 						int posX = Integer.parseInt(playerInfo[2]);
 
@@ -128,15 +131,20 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 
 						listOfAliens.clear();
 						int j;
-						for(j = 5; j <  playerInfo.length; j+=2){
+						for(j = 5; j+1 <  playerInfo.length; j+=2){
 							offscreen.getGraphics().fillOval(Integer.parseInt(playerInfo[j]), Integer.parseInt(playerInfo[j+1]), 20, 20);
 							
 							NetAlien alien = new NetAlien(Integer.parseInt(playerInfo[j]), Integer.parseInt(playerInfo[j+1]));
 							listOfAliens.add(alien);
 						}
-						System.out.println(j+ "++++++++++++++++++++++++++++++++++++++++++++++");
+						// System.out.println(j+ "++++++++++++++++++++++++++++++++++++++++++++++");
+
+						for(int k = 0 ; i < listOfShots.size(); i++){
+							offscreen.getGraphics().fillOval(listOfShots.get(k).getX(), listOfShots.get(k).getY(), 10, 10);
+						}
 											
-					}	
+					}
+					
 					frame.repaint();
 				}
 				// }else if (serverData.startsWith("MAP")){
@@ -165,9 +173,9 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 			y=me.getY();
 			if (prevX != x || prevY != y){
 				String msg = "PLAYER "+ name + " " + x + " " + healthPoints + " " + hitPoints + " ";
-				for(NetAlien alien: listOfAliens){
-					msg += alien.getX() + " " + alien.getY()+ " ";
-				}
+				// for(NetAlien alien: listOfAliens){
+				// 	msg += alien.getX() + " " + alien.getY()+ " ";
+				// }
 				send(msg);
 			}
 		}
@@ -180,8 +188,8 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 			switch (ke.getKeyCode()){
 				case KeyEvent.VK_SPACE: 
 				//listOfAliens.clear();
-				System.out.println("YSADHALKDAL:FMDFA><FMA<FN<MAF" + listOfAliens.size());
-				send("DEAD ai 1");
+				// System.out.println("YSADHALKDAL:FMDFA><FMA<FN<MAF" + listOfAliens.size());
+				// send("DEAD ai 1");
 				fire(x);
 				break;
 				case KeyEvent.VK_LEFT:x-=xspeed;break;
@@ -189,9 +197,9 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 			}
 			if (prevX != x || prevY != y){
 				String msg = "PLAYER "+ name + " " + x + " " + healthPoints + " " + hitPoints + " ";
-				for(NetAlien alien: listOfAliens){
-					msg += alien.getX() + " " + alien.getY()+ " ";
-				}
+				// for(NetAlien alien: listOfAliens){
+				// 	msg += alien.getX() + " " + alien.getY()+ " ";
+				// }
 				send(msg);
 				
 			}	
@@ -202,8 +210,10 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 	public void fire(int shootPos){
 	
 		Shot shot = new Shot(shootPos);
-		shot.move();
-		System.out.println("shotmade "+ shot.getX() + shot.getY() );
+		shot.shotThread(shot.getY());
+		System.out.println("shotmade "+ shot.getX() + " " + shot.getY());
+		listOfShots.add(shot);
+
 		
 	}
 
