@@ -17,9 +17,10 @@ public class NetPlayer {
 		this.name = name;
 
 
-		Random rand = new Random();
-		this.mapId = rand.nextInt(3) + 1;
+		// Random rand = new Random();
+		// this.mapId = rand.nextInt(3) + 1;
 
+		this.mapId = 3;
 		if(this.mapId == 1){
 			for(int i = 0; i < 5; i++){
 				for(int j = 0; j < 8; j++){
@@ -99,7 +100,10 @@ public class NetPlayer {
 
 	public void deleteAlien(int i){
 		this.listOfAliens.remove(i);
-		System.out.println("===================================================");
+	}
+
+	public void setAlien(ArrayList<NetAlien> listOfAliens){
+		this.listOfAliens = listOfAliens;
 	}
 
 	public String toString(){
