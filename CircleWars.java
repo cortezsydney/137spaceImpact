@@ -114,7 +114,6 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 					String[] playersInfo = serverData.split(":");
 					for (int i=0;i<playersInfo.length;i++){
 						String[] playerInfo = playersInfo[i].split(" ");
-						System.out.println("plauyer length:" +playerInfo.length);
 						this.currPlayer = pname;
 						String pname =playerInfo[1];
 						int posX = Integer.parseInt(playerInfo[2]);
@@ -129,12 +128,13 @@ public class CircleWars extends JPanel implements Runnable, Constants{
 						offscreen.getGraphics().clearRect(0, 17, 800, 600);
 						int j;
 						for(j = 5; j + 1 <  playerInfo.length; j+=2){
-							offscreen.getGraphics().fillOval(Integer.parseInt(playerInfo[j]), Integer.parseInt(playerInfo[j+1]), 20, 20);
+							
 							
 							NetAlien alien = new NetAlien(Integer.parseInt(playerInfo[j]), Integer.parseInt(playerInfo[j+1]));
+
+							offscreen.getGraphics().fillOval(Integer.parseInt(playerInfo[j]), Integer.parseInt(playerInfo[j+1]), 20, 20);
 							listOfAliens.add(alien);
 						}
-						System.out.println(j+ "++++++++++++++++++++++++++++++++++++++++++++++");
 						
 											
 					}	

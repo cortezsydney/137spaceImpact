@@ -1,13 +1,10 @@
-import java.net.InetAddress;
-
+import java.lang.Thread;
 
 public class NetAlien{
 	private int posX, posY;
     private int val=-10;
-	private boolean alive;
 
 	public NetAlien(int x, int y) {
-        this.alive = true;
 		this.posX = x;
 		this.posY = y;
 	}
@@ -29,40 +26,30 @@ public class NetAlien{
 	}
 
 	public void move() {
+        if(this.posX > 0 && this.posX < 800){
+            this.posX += 100;
+        System.out.println(posX);
 
-        if(posX < 0 || posX > 800){
-            this.posY -= 30;
-        } 
-        else{
-            this.changePosition(val);
-            this.posX += val;
-        }
+		} 
+        // else{
+		// 	this.posY += 10;
+        //     this.changePosition(val);
+		// 	 System.out.println("2y");
+        // }
 
+		// System.out.println(posX + " " + posY);
 	}
 
-    public void changePosition(int val){
-        if(val == -10){
-            this.val = 10;
-        }else if(this.val == 10){
-            this.val = -10;
-        }
-    }
-	
-	public void doLogic() {
-		posY += 20;
+    // public void changePosition(int val){
+    //     if(val == -10){
+    //         this.val = 10;
+	// 		System.out.println("3y");
+    //     }else if(this.val == 10){
+	// 		System.out.println("4y");
+    //         this.val = -10;
+    //     }
+    // }
 
-		if (posY >570) {
-			this.alive = false;
-		}
-	}
-
-    public boolean getAlive(){
-        return this.alive;
-    }
-
-	public void setAlive(boolean x){
-        this.alive = x;
-    }
 
 	public String toString(){
 		String retval="";
@@ -71,4 +58,37 @@ public class NetAlien{
 		retval+=this.posY+" ";
 		return retval;
 	}	
+
+	// public void alienThread(){
+	// 	Thread alienT = new Thread(new Runnable (){
+	// 		@override
+	// 		public void run(){
+	// 			try{
+	// 				this.move();
+	// 			}catch(Exception e){
+
+	// 			}
+	// 		}
+	// 	});
+	// 	alienT.start();
+	// }
+	
+	public void alienThread(){
+      	Thread thread = new Thread(new Runnable(){
+			@Override
+			public void run(){
+
+				try{
+					while(true){
+						Thread.sleep(1000); move();
+					}
+					
+				}catch(Exception e){
+
+				}
+				
+			}
+		  });
+		thread.start();
+    }
 }

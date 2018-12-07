@@ -31,8 +31,6 @@ public class GameState{
 			retval+=player.toString()+":";
 		}
 		return retval;
-		
-
 	}
 	
 	public Map getPlayers(){

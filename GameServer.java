@@ -74,9 +74,6 @@ public class GameServer implements Runnable, Constants{
 							NetPlayer player=new NetPlayer(tokens[1],packet.getAddress(),packet.getPort());
 							System.out.println("Player connected: " + tokens[1]);
 							game.update(tokens[1].trim(), player);
-
-
-							System.out.println(player.getMapId());
 							broadcast("CONNECTED "+ tokens[1]);
 							playerCount++;
 							if (playerCount == numPlayers){

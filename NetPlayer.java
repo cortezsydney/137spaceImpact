@@ -20,11 +20,12 @@ public class NetPlayer {
 		// Random rand = new Random();
 		// this.mapId = rand.nextInt(3) + 1;
 
-		this.mapId = 3;
+		this.mapId = 1;
 		if(this.mapId == 1){
 			for(int i = 0; i < 5; i++){
 				for(int j = 0; j < 8; j++){
 					NetAlien alien = new NetAlien(100+(j*50), 50+(i*30)); //85
+					alien.alienThread();
 					this.listOfAliens.add(alien); 
 				}
 			}
@@ -39,7 +40,9 @@ public class NetPlayer {
 			for(int i = 0; i < 7; i++){
 				for(int j = 0; j < 12; j++){
 					NetAlien alien = new NetAlien(100+(j*50), 50+(i*30)); //173
-					this.listOfAliens.add(alien); 
+					
+					alien.alienThread();
+					this.listOfAliens.add(alien);
 				}
 			}
 		}
@@ -77,21 +80,26 @@ public class NetPlayer {
 	public int getY(){
 		return y;
 	}
-	
+
+	public int getHealthPoints(){
+		return this.healthPoints;
+	}
+
 	public void setHealthPoints(int var){
 		this.healthPoints -= var;		
 	}
 
-	public int getHealthPoints(){
-		return this.healthPoints;
+
+	public int getHitPoints(){
+		return this.hitPoints;
 	}
 
 	public void setHitPoints(int hitPoints){
 		this.hitPoints += hitPoints;		
 	}
 
-	public int getHitPoints(){
-		return this.hitPoints;
+	public void setAlien(ArrayList<NetAlien> listOfAliens){
+		this.listOfAliens = listOfAliens;
 	}
 
 	public ArrayList<NetAlien> getListOfAliens(){
@@ -100,10 +108,6 @@ public class NetPlayer {
 
 	public void deleteAlien(int i){
 		this.listOfAliens.remove(i);
-	}
-
-	public void setAlien(ArrayList<NetAlien> listOfAliens){
-		this.listOfAliens = listOfAliens;
 	}
 
 	public String toString(){
@@ -118,7 +122,7 @@ public class NetPlayer {
 			retval += alien.getX() + " " + alien.getY() + " ";
 		} 
 		
-		System.out.println(this.listOfAliens.size());
+		//System.out.println(this.listOfAliens.size());
 		return retval;
 	}	
 }
