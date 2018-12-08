@@ -22,8 +22,6 @@ public class ShotState{
 		return retval;
 	}
 
-
-	
 	public Map getShots(){
 		return shots;
 	}

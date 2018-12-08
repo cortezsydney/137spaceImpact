@@ -16,10 +16,6 @@ public class NetPlayer {
 		this.port = port;
 		this.name = name;
 
-
-		// Random rand = new Random();
-		// this.mapId = rand.nextInt(3) + 1;
-
 		this.mapId = 1;
 		if(this.mapId == 1){
 			for(int i = 0; i < 5; i++){

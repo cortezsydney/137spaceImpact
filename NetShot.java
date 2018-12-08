@@ -31,18 +31,8 @@ public class NetShot{
         this.y = 600;
         circle = new Ellipse2D.Double(0.5 * width, 0.9 * height,
                 0.1 * width, 0.05 * height);  
-    //     this.address = address;
-	// 	this.port = port;
     }
   
-  	public InetAddress getAddress(){
-		return this.address;
-	}
-
-	public int getPort(){
-		return this.port;
-	}
-
     public int getX(){
         return this.x;
     }
@@ -60,14 +50,6 @@ public class NetShot{
 		this.y=y;		
 	}
 
-    // public InetAddress getAddress(){
-	// 	return this.address;
-	// }
-
-	// public int getPort(){
-	// 	return this.port;
-	// }
-
     public String toString(){
 		String retval="";
 		retval+="SHOT ";
@@ -80,29 +62,6 @@ public class NetShot{
     public void move(){
         this.y -= 20;
     }
-
-
-
-	// public void shotThread() {
-
-	// 	Thread thread = new Thread(new Runnable() {
-	// 		@Override
-	// 		public void run() {
-	// 			try {
-	// 				while (y > 10) {
-	// 					Thread.sleep(1000);
-	// 					move();
-	// 				}
-	// 			} catch (InterruptedException e) {
-	// 				e.printStackTrace();
-	// 			}
-
-	// 		}
-	// 	});
-	// 	thread.start();
-
-	// }
-    
 
 }
 
