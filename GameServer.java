@@ -3,15 +3,19 @@
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+
 public class GameServer implements Runnable, Constants{
 	String playerData;
-	int playerCount=0, alienCount = 0;
+	int playerCount=0, alienCount = 0, shotCount = 0;
 	DatagramSocket serverSocket = null;
-    GameState game;
+	GameState game;
+	ShotState shotstate;
+	String shotString="";
 
 	int gameStage = WAITING_FOR_PLAYERS;
 	int numPlayers;
@@ -42,6 +46,21 @@ public class GameServer implements Runnable, Constants{
 			send(player,msg);	
 		}
 	}
+
+	public void shotSend(String msg, InetAddress address, int port){
+		DatagramPacket packet;	
+		byte buf[] = new byte[1000];
+		buf = msg.getBytes();		
+		packet = new DatagramPacket(buf, buf.length, address, port);
+		
+		try{ 
+			serverSocket.send(packet);
+		}catch(IOException ioe){
+			ioe.printStackTrace();
+		}
+	}
+	
+
 
 	public void send(NetPlayer player, String msg){
 		DatagramPacket packet;	
@@ -89,7 +108,7 @@ public class GameServer implements Runnable, Constants{
 				  case IN_PROGRESS:
 					  if (playerData.startsWith("PLAYER")){
 						  String[] playerInfo = playerData.split(" ");					  
-						  String pname =playerInfo[1];
+						  String pname = playerInfo[1];
 						  int posX = Integer.parseInt(playerInfo[2].trim());
 						  //Get the player from the game state
 						
@@ -100,18 +119,17 @@ public class GameServer implements Runnable, Constants{
 						  game.update(pname, player);
 						  broadcast(game.toString());
 					  }
-					if (playerData.startsWith("DEAD")){
-						  String[] playerInfo = playerData.split(" ");					  
-						  String pname =playerInfo[1];
-						  
-						  NetPlayer player=(NetPlayer)game.getPlayers().get(pname);	
-						  player.deleteAlien(Integer.parseInt(playerInfo[2]));			  
-							player.setHitPoints(1);
+					  if (playerData.startsWith("SHOT")){
+						  String[] shotInfo = playerData.split(" ");
 
+						int posX = Integer.parseInt(shotInfo[1].trim());
+						int posY = Integer.parseInt(shotInfo[2].trim());
 
-						  game.update(pname, player);
-						  broadcast(game.updateMap(player.getListOfAliens()));
+						shotString += "SHOT " + posX + " " + posY + " :" ;
+
+						shotSend(shotString, packet.getAddress(), packet.getPort());
 					  }
+
 					  break;
 			}				  
 		}

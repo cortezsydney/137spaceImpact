@@ -28,7 +28,7 @@ public class NetAlien{
 	public void move() {
         if(this.posX > 0 && this.posX < 800){
             this.posX += 100;
-        System.out.println(posX);
+        // System.out.println(posX);
 
 		} 
         // else{
