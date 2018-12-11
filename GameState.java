@@ -22,17 +22,6 @@ public class GameState{
 		return retval;
 	}
 
-	public String updateMap(ArrayList<NetAlien> listOfAliens){
-		String retval="";
-		for(Iterator ite = players.keySet().iterator(); ite.hasNext();){
-			String name = (String)ite.next();
-			NetPlayer player = (NetPlayer)players.get(name);
-			player.setAlien(listOfAliens);
-			retval+=player.toString()+":";
-		}
-		return retval;
-	}
-	
 	public Map getPlayers(){
 		return players;
 	}

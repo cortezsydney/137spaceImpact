@@ -16,32 +16,32 @@ public class NetPlayer {
 		this.port = port;
 		this.name = name;
 
-		this.mapId = 1;
-		if(this.mapId == 1){
-			for(int i = 0; i < 5; i++){
-				for(int j = 0; j < 8; j++){
-					NetAlien alien = new NetAlien(100+(j*50), 50+(i*30)); //85
-					alien.alienThread();
-					this.listOfAliens.add(alien); 
-				}
-			}
-		}else if(this.mapId == 2){
-			for(int i = 0; i < 6; i++){
-				for(int j = 0; j < 10; j++){
-					NetAlien alien = new NetAlien(100+(j*50), 50+(i*30)); //125
-					this.listOfAliens.add(alien); 
-				}
-			}
-		}else if(this.mapId == 3){
-			for(int i = 0; i < 7; i++){
-				for(int j = 0; j < 12; j++){
-					NetAlien alien = new NetAlien(100+(j*50), 50+(i*30)); //173
+		// this.mapId = 1;
+		// if(this.mapId == 1){
+		// 	for(int i = 0; i < 5; i++){
+		// 		for(int j = 0; j < 8; j++){
+		// 			NetAlien alien = new NetAlien(100+(j*50), 50+(i*30)); //85
+		// 			alien.alienThread();
+		// 			this.listOfAliens.add(alien); 
+		// 		}
+		// 	}
+		// }else if(this.mapId == 2){
+		// 	for(int i = 0; i < 6; i++){
+		// 		for(int j = 0; j < 10; j++){
+		// 			NetAlien alien = new NetAlien(100+(j*50), 50+(i*30)); //125
+		// 			this.listOfAliens.add(alien); 
+		// 		}
+		// 	}
+		// }else if(this.mapId == 3){
+		// 	for(int i = 0; i < 7; i++){
+		// 		for(int j = 0; j < 12; j++){
+		// 			NetAlien alien = new NetAlien(100+(j*50), 50+(i*30)); //173
 					
-					alien.alienThread();
-					this.listOfAliens.add(alien);
-				}
-			}
-		}
+		// 			alien.alienThread();
+		// 			this.listOfAliens.add(alien);
+		// 		}
+		// 	}
+		// }
 	}
 
 	public InetAddress getAddress(){

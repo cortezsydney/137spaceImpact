@@ -1,12 +1,17 @@
 import java.lang.Thread;
 
 public class NetAlien{
-	private int posX, posY;
+	private int posX, posY, type, healthPoints;
+	private String name;
     private int val=-10;
 
-	public NetAlien(int x, int y) {
+
+	public NetAlien(String name, int x, int y, int type, int healthPoints) {
 		this.posX = x;
 		this.posY = y;
+		this.name = name;
+		this.type = type;
+		this.healthPoints = healthPoints;
 	}
 
     public void setX(int x){
@@ -53,9 +58,12 @@ public class NetAlien{
 
 	public String toString(){
 		String retval="";
-		retval+="MAP ";
+		retval+="ALIEN ";
+		retval+=this.name+" ";
 		retval+=this.posX+" ";
 		retval+=this.posY+" ";
+		retval+=this.type+" ";
+		retval+=this.healthPoints+" ";
 		return retval;
 	}	
 

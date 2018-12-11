@@ -14,6 +14,7 @@ public class GameServer implements Runnable, Constants{
 	int playerCount=0, alienCount = 0, shotCount = 0;
 	DatagramSocket serverSocket = null;
 	GameState game;
+	MapState map;
 	String shotString="";
 
 	int gameStage = WAITING_FOR_PLAYERS;
@@ -32,6 +33,7 @@ public class GameServer implements Runnable, Constants{
 		}catch(Exception e){}
 
 		game = new GameState();
+		map = new MapState();
 		System.out.println("Game created...");
 		
 		t.start();
@@ -86,7 +88,19 @@ public class GameServer implements Runnable, Constants{
 					  break;	
 				  case GAME_START:
 					  System.out.println("Game State: START");
+
+						for(int i = 0; i < 5; i++){
+							for(int j = 0; j < 8; j++){
+								NetAlien alien = new NetAlien(Integer.toString(alienCount),100+(j*50), 50+(i*30), 1, 0); //85
+								map.update(Integer.toString(alienCount), alien);
+								alienCount += 1;
+							}
+						}						
+						
+
+					  broadcast(map.toString());
 					  broadcast("START");
+					  System.out.println(map.toString());
 					  gameStage = IN_PROGRESS;
 					  break;
 				  case IN_PROGRESS:

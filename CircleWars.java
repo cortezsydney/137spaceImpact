@@ -99,10 +99,22 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 			offscreen.getGraphics().clearRect(0, 620, 800, 100);
 			offscreen.getGraphics().clearRect(0, 0, 800, 15);
 
+
 			if (!connected && serverData.startsWith("CONNECTED")) {
 				connected = true;
 				System.out.println("Connected.");
 				send("PLAYER " + name + " " + x + " " + healthPoints + " " + hitPoints);
+			} else if (serverData.startsWith("ALIEN")) {
+				String[] playersInfo = serverData.split(":");
+				for (int i = 0; i < playersInfo.length; i++) {
+					String[] playerInfo = playersInfo[i].split(" ");
+			
+					int posX = Integer.parseInt(playerInfo[2]);
+					int posY = Integer.parseInt(playerInfo[3]);
+
+					offscreen.getGraphics().fillOval(posX, posY, 20, 20);
+				}
+				frame.repaint();
 			} else if (!connected) {
 				System.out.println("Connecting..");
 				send("CONNECT " + name);
@@ -194,7 +206,7 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 						offscreen.getGraphics().fillOval(shot.getX(), shot.getY(), 10, 10);
 						// label.setIcon(new ImageIcon(img));
     					// label.repaint();
-						frame.repaint();
+					//	frame.repaint();
 					}
 					frame.repaint();
 				} catch (InterruptedException e) {
