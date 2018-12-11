@@ -10,18 +10,23 @@ import javax.swing.*;
 import java.awt.*;  
 import java.awt.event.*;  
 
+
+import java.lang.Process; 
 import proto.TcpPacketProtos.TcpPacket;
 import proto.PlayerProtos.Player;
 import proto.TcpPacketProtos.TcpPacket.CreateLobbyPacket;
 import proto.TcpPacketProtos.TcpPacket.ChatPacket;
 
 
-public class Menu{
+//public int MainChat extends GameServer{
+public class MainChat{
 	public static Scanner scanner = new Scanner(System.in);
 	public static String SERVERNAME = "202.92.144.45";
 	public static int PORT = 80;
+    
+    CircleWars play;
 
-
+    static int numPlayers = 0;
 	private JFrame frame = new JFrame("Space Impact");
 	private JPanel mainPanel, namePanel, choicePanel, mainChatPanel, idPanel, headerPanel, invalidIdPanel, fullLobbyPanel, messagePanel;
 	private JLabel welcomeLabel, idLabel;
@@ -36,8 +41,10 @@ public class Menu{
 	private String playerName, message;
 
 	public static void main(String s[]){
-        Menu menu = new Menu();
+        MainChat menu = new MainChat();
         menu.preFrame();
+
+
 
 	}
 	
@@ -211,8 +218,11 @@ public class Menu{
 		
         
         frame.add(mainPanel);
-        frame.setSize(300,500);
-        frame.setLocationRelativeTo(null);
+        frame.setSize(300,700);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation(
+		((screenSize.width - 300) / 2) + 400,
+		((screenSize.height - 500) / 2));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
 
@@ -379,6 +389,9 @@ public class Menu{
 				
 				chatThread(socket, player);
 				readThread(socket);
+                numPlayers += 1;
+                play = new CircleWars("localhost", player.getName(), Integer.toString(180), 30, 0);    
+                 
 			}else if(parsedPacket.getType() == TcpPacket.PacketType.ERR_LDNE){			//if the lobby does not exist
 				TcpPacket.ErrLdnePacket connectionPacket = TcpPacket.ErrLdnePacket.parseFrom(sliced2);
 				System.out.println("Lobby does not exist. (" + connectionPacket.getErrMessage() + ")");

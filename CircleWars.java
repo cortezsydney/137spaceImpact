@@ -64,12 +64,17 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 		offscreen = (BufferedImage) this.createImage(800, 700);
 
 		// Some gui stuff again...
-		gamePanel.addKeyListener(new KeyHandler());
-		gamePanel.addMouseMotionListener(new MouseMotionHandler());
-		gamePanel.setPreferredSize(new Dimension(300,700));
+		frame.addKeyListener(new KeyHandler());
+		frame.addMouseMotionListener(new MouseMotionHandler());
+		frame.setPreferredSize(new Dimension(300,700));
 		// tiime to play
 
 		t.start();
+		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation(
+		((screenSize.width)/ 4)-75,
+		((screenSize.height - 500) / 2));
 
 		frame.add(gamePanel);
 	}
@@ -120,7 +125,7 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 
 					offscreen.getGraphics().fillOval(posX, posY, 20, 20);
 				}
-				gamePanel.repaint();
+				frame.repaint();
 			} else if (!connected) {
 				System.out.println("Connecting..");
 				send("CONNECT " + name);
@@ -145,7 +150,7 @@ public class CircleWars extends JPanel implements Runnable, Constants {
     					// label.repaint();
 						// frame.add(label);
 					}
-					gamePanel.repaint();
+					frame.repaint();
 				}
 				if (serverData.startsWith("SHOT")) {
 					String[] playersInfo = serverData.split(":");

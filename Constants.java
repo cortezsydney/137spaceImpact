@@ -5,5 +5,5 @@ public interface Constants {
 	public final int GAME_END = 2;
 	public final int WAITING_FOR_PLAYERS = 3;
 	public static final int NUMBER_OF_PLAYERS = 3;
-	public static final int PORT = 2222;
+	public static final int PORT = 4444;
 }
