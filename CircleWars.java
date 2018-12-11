@@ -41,6 +41,7 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 
 	String currPlayer;
 
+	JPanel gamePanel = new JPanel();
 	public CircleWars(String server, String name, String pos, int healthPoints, int hitPoints) throws Exception {
 		this.server = server;
 		this.name = name;
@@ -55,6 +56,7 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(800, 700);
 		frame.setVisible(true);
+
 
 		// create the buffer
 		offscreen = (BufferedImage) this.createImage(800, 700);
