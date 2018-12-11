@@ -18,6 +18,7 @@ import javax.swing.ImageIcon;
 import java.util.ArrayList;
 import java.lang.String;
 
+import java.awt.Dimension;
 public class CircleWars extends JPanel implements Runnable, Constants {
 	JFrame frame = new JFrame();
 	int x = 10, y = 10, xspeed = 2, yspeed = 2, prevX, prevY;
@@ -58,16 +59,19 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 		frame.setVisible(true);
 
 
+	//WW	gamePanel.setPreferredSize(new Dimension(300,700));	
 		// create the buffer
 		offscreen = (BufferedImage) this.createImage(800, 700);
 
 		// Some gui stuff again...
-		frame.addKeyListener(new KeyHandler());
-		frame.addMouseMotionListener(new MouseMotionHandler());
-
+		gamePanel.addKeyListener(new KeyHandler());
+		gamePanel.addMouseMotionListener(new MouseMotionHandler());
+		gamePanel.setPreferredSize(new Dimension(300,700));
 		// tiime to play
 
 		t.start();
+
+		frame.add(gamePanel);
 	}
 
 	public void send(String msg) {
@@ -116,7 +120,7 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 
 					offscreen.getGraphics().fillOval(posX, posY, 20, 20);
 				}
-				frame.repaint();
+				gamePanel.repaint();
 			} else if (!connected) {
 				System.out.println("Connecting..");
 				send("CONNECT " + name);
@@ -141,7 +145,7 @@ public class CircleWars extends JPanel implements Runnable, Constants {
     					// label.repaint();
 						// frame.add(label);
 					}
-					frame.repaint();
+					gamePanel.repaint();
 				}
 				if (serverData.startsWith("SHOT")) {
 					String[] playersInfo = serverData.split(":");
