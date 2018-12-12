@@ -116,14 +116,20 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 				System.out.println("Connected.");
 				send("PLAYER " + name + " " + x + " " + healthPoints + " " + hitPoints);
 			} else if (serverData.startsWith("ALIEN")) {
+				offscreen.getGraphics().clearRect(0, 20, 800, 600);
 				String[] playersInfo = serverData.split(":");
 				for (int i = 0; i < playersInfo.length; i++) {
 					String[] playerInfo = playersInfo[i].split(" ");
 			
 					int posX = Integer.parseInt(playerInfo[2]);
-					int posY = Integer.parseInt(playerInfo[3]);
 
-					offscreen.getGraphics().fillOval(posX, posY, 20, 20);
+					NetAlien player=new NetAlien(playerInfo[1], Integer.valueOf(playerInfo[2]), Integer.valueOf(playerInfo[3]),Integer.valueOf(playerInfo[4]),Integer.valueOf(playerInfo[5]));
+
+				
+					alienThread(player);
+					
+						
+					// offscreen.getGraphics().fillOval(posX, posY, 20, 20);
 				}
 				frame.repaint();
 			} else if (!connected) {
@@ -228,13 +234,40 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 		});
 		thread.start();
 	}
+	public void alienThread(NetAlien alien){
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+				//	MyJLabel label = new MyJLabel(new ImageIcon(img), shot.getX(), shot.getY());
+				//	frame.add(label);
+			
+					while(alien.getY() < 500){
+						// paintImmediately(shot.getX(),shot.getY()+20,10,10);
+						Thread.sleep(1000);
+						alien.move();
+						send(alien.toString());
+						// label.setIcon(new ImageIcon(img));
+    					// label.repaint();
+						// frame.repaint();
+						offscreen.getGraphics().fillOval(alien.getX(), alien.getY(), 10, 10);
+					}
+				//	frame.repaint();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 
-	public static void main(String args[]) throws Exception {
-		if (args.length != 3) {
-			System.out.println("Usage: java -jar circlewars-client <server> <player name>");
-			System.exit(1);
-		}
-
-		new CircleWars(args[0], args[1], args[2], 15, 0);
+			}
+		});
+		thread.start();
 	}
+
+	// public static void main(String args[]) throws Exception {
+	// 	if (args.length != 3) {
+	// 		System.out.println("Usage: java -jar circlewars-client <server> <player name>");
+	// 		System.exit(1);
+	// 	}
+
+	// 	new CircleWars(args[0], args[1], args[2], 15, 0);
+	// }
 }

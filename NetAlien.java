@@ -1,13 +1,16 @@
 import java.lang.Thread;
 
 public class NetAlien{
-	private int posX, posY, type, healthPoints;
+	private int posX, posY, type, healthPoints,originalX,alienCount;
 	private String name;
-    private int val=-10;
+    private int val=100;
 
 
-	public NetAlien(String name, int x, int y, int type, int healthPoints) {
+	public NetAlien( String name, int x, int y, int type, int healthPoints) {
+		
+		// this.alienCount=alienCount;
 		this.posX = x;
+		this.originalX = x;
 		this.posY = y;
 		this.name = name;
 		this.type = type;
@@ -31,11 +34,11 @@ public class NetAlien{
 	}
 
 	public void move() {
-        if(this.posX > 0 && this.posX < 800){
-            this.posX += 100;
-        // System.out.println(posX);
+        // if(this.posX > 0 && this.posX < 800){
+        //     this.posX += 100;
+        // // System.out.println(posX);
 
-		} 
+		// } 
         // else{
 		// 	this.posY += 10;
         //     this.changePosition(val);
@@ -43,6 +46,15 @@ public class NetAlien{
         // }
 
 		// System.out.println(posX + " " + posY);
+		if(this.posY < 600){
+			if(this.posX>700 || this.posX<100 ){
+				this.posY+=50;
+				this.posX = 150;
+			}
+			else {
+				this.posX+=val;
+			}
+		}
 	}
 
     // public void changePosition(int val){
