@@ -12,7 +12,6 @@ import javax.swing.*;
 
 public class NetShot{
     private InetAddress address;
-	//movement speed of shot
 	private double moveSpeed = -300;
 	private boolean used = false;
     private int x,y, shotCount;
@@ -23,8 +22,6 @@ public class NetShot{
     private int width = 30, height = 30;
     private String name;
 
-
-	//create new shot from , 
 	public NetShot(int shotCount, int x) {
         this.name = name;
         this.x = x;

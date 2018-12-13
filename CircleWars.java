@@ -1,4 +1,3 @@
-
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -11,18 +10,17 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 import java.util.ArrayList;
 import java.lang.String;
-
 import java.awt.Dimension;
+
 public class CircleWars extends JPanel implements Runnable, Constants {
 	JFrame frame = new JFrame();
 	int x = 10, y = 10, xspeed = 2, yspeed = 2, prevX, prevY;
-//	String img = "layer.png";
+
 	Thread t = new Thread(this);
 	String name = "Joseph";
 	int healthPoints, hitPoints;
@@ -36,9 +34,7 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 
 	String pname;
 	String pos;
-
-	ArrayList<NetAlien> listOfAliens = new ArrayList<NetAlien>();
-	ArrayList<Shot> listOfShots = new ArrayList<Shot>();
+	String checkers;
 
 	String currPlayer;
 
@@ -49,33 +45,25 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 		this.healthPoints = 15;
 		this.hitPoints = 0;
 		this.pos = pos;
+
 		frame.setTitle(APP_NAME + ":" + name);
 		socket.setSoTimeout(100);
 
-		// Some gui stuff i hate.
 		frame.getContentPane().add(this);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(800, 700);
 		frame.setVisible(true);
-
-
-	//WW	gamePanel.setPreferredSize(new Dimension(300,700));	
-		// create the buffer
+	
 		offscreen = (BufferedImage) this.createImage(800, 700);
 
-		// Some gui stuff again...
 		frame.addKeyListener(new KeyHandler());
 		frame.addMouseMotionListener(new MouseMotionHandler());
 		frame.setPreferredSize(new Dimension(300,700));
-		// tiime to play
 
 		t.start();
 		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setLocation(
-		((screenSize.width)/ 4)-75,
-		((screenSize.height - 500) / 2));
-
+        frame.setLocation(((screenSize.width)/ 4)-75,((screenSize.height - 500) / 2));
 		frame.add(gamePanel);
 	}
 
@@ -91,7 +79,6 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 	}
 
 	public void run() {
-		long lastLoopTime = System.currentTimeMillis();
 		while (true) {
 			try {
 				Thread.sleep(1);
@@ -110,26 +97,20 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 			offscreen.getGraphics().clearRect(0, 620, 800, 100);
 			offscreen.getGraphics().clearRect(0, 0, 800, 15);
 
-
 			if (!connected && serverData.startsWith("CONNECTED")) {
 				connected = true;
 				System.out.println("Connected.");
 				send("PLAYER " + name + " " + x + " " + healthPoints + " " + hitPoints);
 			} else if (serverData.startsWith("ALIEN")) {
+				checkers= "";
 				offscreen.getGraphics().clearRect(0, 20, 800, 600);
 				String[] playersInfo = serverData.split(":");
 				for (int i = 0; i < playersInfo.length; i++) {
 					String[] playerInfo = playersInfo[i].split(" ");
-			
 					int posX = Integer.parseInt(playerInfo[2]);
-
 					NetAlien player=new NetAlien(playerInfo[1], Integer.valueOf(playerInfo[2]), Integer.valueOf(playerInfo[3]),Integer.valueOf(playerInfo[4]),Integer.valueOf(playerInfo[5]));
-
-				
 					alienThread(player);
-					
-						
-					// offscreen.getGraphics().fillOval(posX, posY, 20, 20);
+					checkers+=playerInfo[1] + " " + playerInfo[2] + ":";
 				}
 				frame.repaint();
 			} else if (!connected) {
@@ -137,9 +118,6 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 				send("CONNECT " + name);
 			} else if (connected) {
 				if (serverData.startsWith("PLAYER")) {
-					long lala = System.currentTimeMillis() - lastLoopTime;
-					lastLoopTime = System.currentTimeMillis();
-
 					String[] playersInfo = serverData.split(":");
 					for (int i = 0; i < playersInfo.length; i++) {
 						String[] playerInfo = playersInfo[i].split(" ");
@@ -148,13 +126,11 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 						int posX = Integer.parseInt(playerInfo[2]);
 
 						offscreen.getGraphics().fillOval(posX, 620, 50, 50);
-						offscreen.getGraphics().drawString(pname + " position:" + playerInfo[2] + " health:"
-								+ playerInfo[3] + " hitPoints:" + playerInfo[4], posX, 10);
-						//MyJLabel label = new MyJLabel(new ImageIcon(img), posX, 620);
-						//offscreen.getGraphics().fillOval(shot.getX(), shot.getY(), 10, 10);
-						// label.setIcon(new ImageIcon(img));
-    					// label.repaint();
-						// frame.add(label);
+						if(Integer.parseInt(playerInfo[3]) == 0){
+							playerInfo[3] = "is dead";
+						}
+
+						offscreen.getGraphics().drawString(pname + " position:" + playerInfo[2] + " health:" + playerInfo[3] + " hitPoints:" + playerInfo[4], posX, 10);
 					}
 					frame.repaint();
 				}
@@ -199,7 +175,6 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 					break;
 				case KeyEvent.VK_LEFT:
 					x -= xspeed;
-					listOfAliens.remove(1);
 					send("DEAD " + name + " 0");
 					break;
 				case KeyEvent.VK_RIGHT:
@@ -215,15 +190,21 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 			@Override
 			public void run() {
 				try {
-				//	MyJLabel label = new MyJLabel(new ImageIcon(img), shot.getX(), shot.getY());
-				//	frame.add(label);
 					while(shot.getY() > 50){
 						Thread.sleep(1000);
 						shot.move();
+
+						String[] playersInfo = checkers.split(":");
+						for (int i = 0; i < playersInfo.length; i++) {
+							String[] playerInfo = playersInfo[i].split(" ");
+							if(shot.getX() == Integer.parseInt(playerInfo[1]) && shot.getY() == Integer.parseInt(playerInfo[2])){
+								String killer = "DEAD " + playerInfo[3];
+								send(killer);
+								System.out.println(killer);
+							}
+						}
 						offscreen.getGraphics().fillOval(shot.getX(), shot.getY(), 10, 10);
-						// label.setIcon(new ImageIcon(img));
-    					// label.repaint();
-					//	frame.repaint();
+						frame.repaint();
 					}
 					frame.repaint();
 				} catch (InterruptedException e) {
@@ -234,25 +215,22 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 		});
 		thread.start();
 	}
+
 	public void alienThread(NetAlien alien){
 		Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-				//	MyJLabel label = new MyJLabel(new ImageIcon(img), shot.getX(), shot.getY());
-				//	frame.add(label);
-			
-					while(alien.getY() < 500){
-						// paintImmediately(shot.getX(),shot.getY()+20,10,10);
+					while(alien.getY() < 600){
+						if(alien.getY() > 500 ){
+							send("PLDEAD "+name);
+						}
+						
 						Thread.sleep(1000);
 						alien.move();
 						send(alien.toString());
-						// label.setIcon(new ImageIcon(img));
-    					// label.repaint();
-						// frame.repaint();
 						offscreen.getGraphics().fillOval(alien.getX(), alien.getY(), 10, 10);
 					}
-				//	frame.repaint();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -261,13 +239,4 @@ public class CircleWars extends JPanel implements Runnable, Constants {
 		});
 		thread.start();
 	}
-
-	// public static void main(String args[]) throws Exception {
-	// 	if (args.length != 3) {
-	// 		System.out.println("Usage: java -jar circlewars-client <server> <player name>");
-	// 		System.exit(1);
-	// 	}
-
-	// 	new CircleWars(args[0], args[1], args[2], 15, 0);
-	// }
 }

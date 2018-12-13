@@ -7,8 +7,6 @@ public class NetAlien{
 
 
 	public NetAlien( String name, int x, int y, int type, int healthPoints) {
-		
-		// this.alienCount=alienCount;
 		this.posX = x;
 		this.originalX = x;
 		this.posY = y;
@@ -34,39 +32,15 @@ public class NetAlien{
 	}
 
 	public void move() {
-        // if(this.posX > 0 && this.posX < 800){
-        //     this.posX += 100;
-        // // System.out.println(posX);
-
-		// } 
-        // else{
-		// 	this.posY += 10;
-        //     this.changePosition(val);
-		// 	 System.out.println("2y");
-        // }
-
-		// System.out.println(posX + " " + posY);
 		if(this.posY < 600){
 			if(this.posX>700 || this.posX<100 ){
 				this.posY+=50;
 				this.posX = 150;
-			}
-			else {
+			}else {
 				this.posX+=val;
 			}
 		}
 	}
-
-    // public void changePosition(int val){
-    //     if(val == -10){
-    //         this.val = 10;
-	// 		System.out.println("3y");
-    //     }else if(this.val == 10){
-	// 		System.out.println("4y");
-    //         this.val = -10;
-    //     }
-    // }
-
 
 	public String toString(){
 		String retval="";
@@ -79,34 +53,16 @@ public class NetAlien{
 		return retval;
 	}	
 
-	// public void alienThread(){
-	// 	Thread alienT = new Thread(new Runnable (){
-	// 		@override
-	// 		public void run(){
-	// 			try{
-	// 				this.move();
-	// 			}catch(Exception e){
-
-	// 			}
-	// 		}
-	// 	});
-	// 	alienT.start();
-	// }
-	
 	public void alienThread(){
       	Thread thread = new Thread(new Runnable(){
 			@Override
 			public void run(){
-
 				try{
 					while(true){
 						Thread.sleep(1000); move();
 					}
 					
-				}catch(Exception e){
-
-				}
-				
+				}catch(Exception e){}
 			}
 		  });
 		thread.start();

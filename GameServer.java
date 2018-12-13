@@ -88,16 +88,13 @@ public class GameServer implements Runnable, Constants{
 					  break;	
 				  case GAME_START:
 					  System.out.println("Game State: START");
-
 						for(int i = 0; i < 5; i++){
 							for(int j = 0; j < 8; j++){
 								NetAlien alien = new NetAlien(Integer.toString(alienCount),100+(j*50), 50+(i*30), 1, 0); //85
 								map.update(Integer.toString(alienCount), alien);
 								alienCount += 1;
 							}
-						}						
-						
-
+						}							
 					  broadcast(map.toString());
 					  broadcast("START");
 					  System.out.println(map.toString());
@@ -124,6 +121,46 @@ public class GameServer implements Runnable, Constants{
 
 						shotString += "SHOT " + posX + " " + posY + " " + name +":";
 						broadcast(shotString);
+
+						if(posY >= 300){
+							NetPlayer player=(NetPlayer)game.getPlayers().get(name);					  
+							player.setHitPoints(1);
+
+							game.update(name, player);
+							broadcast(game.toString());
+						}
+					  }
+					  if (playerData.startsWith("DEAD")){
+						  System.out.println("DEAD");
+						String[] shotInfo = playerData.split(" ");
+						String name = shotInfo[1].trim();
+
+						NetPlayer player=(NetPlayer)game.getPlayers().get(name);					  
+						player.setHitPoints(1);
+
+						game.update(name, player);
+						broadcast(game.toString());
+					  }
+					  if (playerData.startsWith("DEAD")){
+						  System.out.println("DEAD");
+						String[] shotInfo = playerData.split(" ");
+						String name = shotInfo[1].trim();
+
+						NetPlayer player=(NetPlayer)game.getPlayers().get(name);					  
+						player.setHitPoints(1);
+
+						game.update(name, player);
+						broadcast(game.toString());
+					  }
+					  if (playerData.startsWith("PLDEAD")){
+						String[] shotInfo = playerData.split(" ");
+						String name = shotInfo[1].trim();
+
+						NetPlayer player=(NetPlayer)game.getPlayers().get(name);					  
+						player.setHealthPoints(0);
+
+						game.update(name, player);
+						broadcast(game.toString());
 					  }
 					  break;
 			}				  
